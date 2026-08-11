@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self';
+        img-src 'self' data: https:;
+        font-src 'self' data:;
+        connect-src 'self';
+        base-uri 'self';
+        form-action 'self';
+        worker-src 'self';
+        upgrade-insecure-requests;
+        block-all-mixed-content;
+    ">
+    <title>🐦 一時メモ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <button class="btn-back pink push" disabled id="btn-back">←</button>
+    <button class="green push" id="btn-new">+ Add</button>
+    <button class="blue push" id="btn-move">Move</button>
+    <button class="red push" id="btn-delete">Trash</button>
+    <button class="purple push" id="btn-undo" title="元に戻す">↩️Undo</button>
+    <button class="green push" id="btn-copy" title="全コピー">📋Copy</button>
+    <button class="yellow push" id="btn-clear" title="クリア">🧹Clear</button>
+</header>
+
+<!-- パンくずリスト -->
+<div id="breadcrumb" class="breadcrumb"></div>
+
+<!-- 検索バー ＆ 並び替えコントロール -->
+<div class="search-container">
+    <div class="search-wrapper">
+        <input type="text" id="search-input" class="search-input" placeholder="🔍 検索...">
+        <button id="btn-search-clear" class="search-clear-btn" style="display: none;">×</button>
+    </div>
+    <div class="sort-wrapper">
+        <label for="sort-select">Sort:</label>
+        <select id="sort-select" class="sort-select">
+            <option value="updated-desc">更新が新しい順</option>
+            <option value="updated-asc">更新が古い順</option>
+            <option value="title-asc">タイトル順 (A-Z)</option>
+            <option value="title-desc">タイトル順 (Z-A)</option>
+        </select>
+    </div>
+</div>
+
+<!-- メイン表示領域 -->
+<div id="main-view"></div>
+
+<!-- エディタ画面 -->
+<div id="editor-view">
+    <div class="editor-header">
+        <input type="text" id="editor-title" class="editor-title" placeholder="タイトルを入力...">
+    </div>
+    <textarea id="editor" placeholder="ここにメモを入力..."></textarea>
+</div>
+
+<!-- 移動モーダル -->
+<div id="move-modal">
+    <div class="modal-content">
+        <div class="modal-title" id="move-modal-title">移動先を選択</div>
+        <div id="move-list"></div>
+        <button id="btn-move-cancel" class="move-folder-cancel red push">Cancel</button>
+    </div>
+</div>
+
+<!-- 新規作成モーダル -->
+<div id="new-modal">
+    <div class="new-modal-content">
+        <div class="new-modal-title">新規作成</div>
+        <div class="new-btn-group">
+            <button id="btn-new-folder" class="purple push">📁 Folder</button>
+            <button id="btn-new-note" class="blue push">📄 Memo</button>
+            <button id="btn-new-cancel" class="red push">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="message"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
