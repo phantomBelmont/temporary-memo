@@ -591,4 +591,364 @@ function switchView(view) {
 
     if (view === 'gallery') {
         if (editorView) editorView.style.display = 'none';
-       
+        if (mainView) mainView.style.display = 'block';
+        if (searchContainer) searchContainer.style.display = 'block';
+        if (breadcrumbEl) breadcrumbEl.style.display = 'block';
+
+        if (btnNew) btnNew.style.display = currentFolderId === 'trash' ? 'none' : 'inline-block';
+        if (btnMove) btnMove.style.display = 'none';
+        if (btnDelete) btnDelete.style.display = 'none';
+        if (btnUndo) btnUndo.style.display = 'none';
+        if (btnCopy) btnCopy.style.display = 'none';
+        if (btnClear) btnClear.style.display = 'none';
+        if (btnSave) btnSave.style.display = 'none';
+
+        loadItems();
+    } else {
+        if (editorView) editorView.style.display = 'block';
+        if (mainView) mainView.style.display = 'none';
+        if (searchContainer) searchContainer.style.display = 'none';
+        if (breadcrumbEl) breadcrumbEl.style.display = 'none';
+
+        if (btnNew) btnNew.style.display = 'none';
+        if (btnMove) btnMove.style.display = 'inline-block';
+        if (btnDelete) btnDelete.style.display = 'inline-block';
+        if (btnUndo) btnUndo.style.display = 'inline-block';
+        if (btnCopy) btnCopy.style.display = 'inline-block';
+        if (btnClear) btnClear.style.display = 'inline-block';
+        if (btnSave) btnSave.style.display = 'none';
+
+        if (editorTitle) editorTitle.focus();
+    }
+    updateBackButton();
+}
+
+// ==========================================
+// 7. ゴミ箱・移動・削除・フォルダ関連処理
+// ==========================================
+function addFolder(rawName) {
+    const folderName = (rawName || '').trim() === '' ? '無題' : rawName.trim();
+
+    const folderData = {
+        title: folderName,
+        type: 'folder',
+        parentId: currentFolderId === 'trash' ? 'root' : currentFolderId,
+        updatedAt: new Date().toISOString(),
+        isTrash: false
+    };
+
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    store.add(folderData);
+
+    transaction.oncomplete = () => {
+        showStatus('フォルダ作成！ 📁');
+        if (newModal) newModal.style.display = 'none';
+        loadItems();
+    };
+}
+
+function renameFolder(folderId, currentTitle) {
+    let newName = prompt("フォルダ名を入力しよう！🐱:", currentTitle);
+
+    if (newName !== null) {
+        const finalName = newName.trim() === "" ? "無題" : newName.trim();
+
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const req = store.get(folderId);
+
+        req.onsuccess = () => {
+            const item = req.result;
+            if (item) {
+                item.title = finalName;
+                item.updatedAt = new Date().toISOString();
+                store.put(item);
+            }
+        };
+
+        transaction.oncomplete = () => {
+            showStatus('フォルダ名を変更しました！ ✏️');
+            loadItems();
+        };
+    }
+}
+
+function moveToTrash(id) {
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const req = store.get(id);
+
+    req.onsuccess = () => {
+        const item = req.result;
+        if (item) {
+            item.isTrash = true;
+            store.put(item);
+        }
+    };
+
+    transaction.oncomplete = () => {
+        showStatus('ゴミ箱へ移動しました 🗑️');
+        if (editorView && editorView.style.display === 'block') {
+            switchView('gallery');
+        } else {
+            loadItems();
+        }
+    };
+}
+
+function restoreItem(id) {
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const req = store.get(id);
+
+    req.onsuccess = () => {
+        const item = req.result;
+        if (item) {
+            item.isTrash = false;
+            store.put(item);
+        }
+    };
+
+    transaction.oncomplete = () => {
+        showStatus('復元しました ↩️');
+        loadItems();
+    };
+}
+
+// 単体完全削除（子要素も連鎖削除）
+function deletePermanently(id) {
+    if (!confirm('完全に削除しますか？（フォルダ内のメモも全て削除されます）')) return;
+
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const req = store.getAll();
+
+    req.onsuccess = () => {
+        const allItems = req.result || [];
+        const idsToDelete = [id, ...getAllDescendantIds(id, allItems)];
+
+        idsToDelete.forEach(deleteId => {
+            store.delete(deleteId);
+        });
+    };
+
+    transaction.oncomplete = () => {
+        showStatus('完全削除しました ✖');
+        loadItems();
+    };
+}
+
+// ゴミ箱を空にする（配下の子フォルダ・子メモも完全追跡して連鎖削除）
+function emptyTrash() {
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const req = store.getAll();
+
+    req.onsuccess = () => {
+        const allItems = req.result || [];
+        const trashItems = allItems.filter(item => checkIsTrash(item));
+        
+        if (trashItems.length === 0) {
+            showStatus('すでに空だよ 🗑️');
+            return;
+        }
+
+        if (confirm(`ゴミ箱の中にあるアイテムをすべて完全に削除しますか？\n※元に戻せないけど本当に削除していいですか...？🐱`)) {
+            // 削除対象IDの収集（ゴミ箱直下のアイテム ＋ その配下の全子孫）
+            let allDeleteIds = new Set();
+            trashItems.forEach(item => {
+                allDeleteIds.add(item.id);
+                if (item.type === 'folder') {
+                    const descendants = getAllDescendantIds(item.id, allItems);
+                    descendants.forEach(dId => allDeleteIds.add(dId));
+                }
+            });
+
+            const deleteTx = db.transaction([STORE_NAME], 'readwrite');
+            const deleteStore = deleteTx.objectStore(STORE_NAME);
+
+            allDeleteIds.forEach(delId => {
+                deleteStore.delete(delId);
+            });
+
+            deleteTx.oncomplete = () => {
+                showStatus('ゴミ箱を完全に空にしました 🧹');
+                loadItems();
+            };
+        }
+    };
+}
+
+function openMoveModalForItem(id, type, title) {
+    itemToMoveId = id;
+    if (moveModalTitle) moveModalTitle.textContent = `「${title || '無題'}」の移動先を選択`;
+
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.getAll();
+
+    request.onsuccess = () => {
+        const allItems = request.result || [];
+        
+        const itemMap = new Map();
+        allItems.forEach(item => itemMap.set(item.id, item));
+
+        // 厳格フィルタ:
+        // 1. フォルダであること
+        // 2. 自分自身ではないこと
+        // 3. 自分自身の子孫フォルダではないこと
+        // 4. 先祖も含めゴミ箱内（isTrash: true）または親不在の孤立フォルダでないこと
+        const folders = allItems.filter(item => {
+            if (item.type !== 'folder') return false;
+            if (item.id === id) return false;
+            if (isDescendantOf(item.id, id, itemMap)) return false;
+            if (isFolderInTrash(item, itemMap)) return false;
+            return true;
+        });
+        
+        if (moveList) moveList.innerHTML = '';
+
+        const rootBtn = document.createElement('div');
+        rootBtn.className = 'green push';
+        rootBtn.textContent = '🏠 to Home';
+        rootBtn.style.padding = '8px';
+        rootBtn.style.cursor = 'pointer';
+        rootBtn.addEventListener('click', () => {
+            performMove(id, 'root');
+        });
+        if (moveList) moveList.appendChild(rootBtn);
+
+        folders.forEach(folder => {
+            const div = document.createElement('div');
+            div.className = 'move-item';
+            div.textContent = `📁 ${folder.title}`;
+            div.style.padding = '8px';
+            div.style.cursor = 'pointer';
+            div.addEventListener('click', () => {
+                performMove(id, folder.id);
+            });
+            if (moveList) moveList.appendChild(div);
+        });
+
+        if (moveModal) moveModal.style.display = 'block';
+    };
+}
+
+function openMoveModal() {
+    if (currentNoteId !== null) {
+        openMoveModalForItem(currentNoteId, 'note', editorTitle ? editorTitle.value : '');
+    }
+}
+
+function performMove(id, newParentId) {
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const req = store.get(id);
+
+    req.onsuccess = () => {
+        const item = req.result;
+        if (item) {
+            item.parentId = newParentId;
+            item.updatedAt = new Date().toISOString();
+            store.put(item);
+        }
+    };
+
+    transaction.oncomplete = () => {
+        if (moveModal) moveModal.style.display = 'none';
+        showStatus('移動しました 📦');
+        loadItems();
+    };
+}
+
+// ==========================================
+// 8. イベントリスナー設定 ＆ 初期化起動
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    initDB().then(() => {
+        createFireflies();
+        switchView('gallery');
+    }).catch(err => {
+        console.error("DB初期化失敗:", err);
+    });
+
+    if (btnBack) btnBack.addEventListener('click', goBack);
+    
+    if (btnNew) {
+        btnNew.addEventListener('click', () => {
+            if (newModal) newModal.style.display = 'block';
+        });
+    }
+
+    if (btnNewFolder) {
+        btnNewFolder.addEventListener('click', () => {
+            const name = prompt("フォルダ名を入力しよう!🐱");
+            if (name !== null) {
+                addFolder(name);
+            }
+        });
+    }
+
+    if (btnNewNote) {
+        btnNewNote.addEventListener('click', () => {
+            addNote();
+        });
+    }
+
+    if (btnNewCancel) {
+        btnNewCancel.addEventListener('click', () => {
+            if (newModal) newModal.style.display = 'none';
+        });
+    }
+
+    if (btnMoveCancel) {
+        btnMoveCancel.addEventListener('click', () => {
+            if (moveModal) moveModal.style.display = 'none';
+        });
+    }
+
+    if (btnDelete) {
+        btnDelete.addEventListener('click', () => {
+            if (currentNoteId !== null) moveToTrash(currentNoteId);
+        });
+    }
+
+    if (btnMove) {
+        btnMove.addEventListener('click', () => {
+            if (currentNoteId !== null) {
+                openMoveModalForItem(currentNoteId, 'note', editorTitle.value);
+            }
+        });
+    }
+
+    if (btnUndo) btnUndo.addEventListener('click', undoEditor);
+    if (btnCopy) btnCopy.addEventListener('click', copyAllText);
+    if (btnClear) btnClear.addEventListener('click', clearEditorText);
+
+    if (editorTitle) editorTitle.addEventListener('input', triggerAutoSave);
+    
+    if (editorText) {
+        editorText.addEventListener('input', triggerAutoSave);
+
+        editorText.addEventListener('paste', () => {
+            recordUndoState();
+        });
+        editorText.addEventListener('cut', () => {
+            recordUndoState();
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => loadItems());
+    }
+    if (btnSearchClear) {
+        btnSearchClear.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            loadItems();
+        });
+    }
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => loadItems());
+    }
+});
