@@ -83,7 +83,7 @@ header {
     background: transparent;
     backdrop-filter: blur(10px);
     border-bottom: 1px solid #00BBFFaa;
-    box-shadow: 0 0 5px #00BBFFaa;
+    box-shadow: 0 0 5px #00BBFF;
     white-space: nowrap;
     overflow-x: auto;
 }
@@ -136,28 +136,35 @@ header button {
 .push:hover{
     background: #77777777;
 }
-🐦️
+
 .push:active {
     transform: scale(0.9) translateY(2px);
+    background: #aaaaaa77;
 }
 
 .red{
     box-shadow: 0 0 30px #700000;
+    border-color: #700000;
 }
 .blue{
-    box-shadow: 0 0 30px #2B66a0;
+    box-shadow: 0 0 30px #2B77aa;
+    border-color: #2B77aa;
 }
 .green{
-    box-shadow: 0 0 30px #007700;
+    box-shadow: 0 0 30px #00aa00;
+    border-color: #00aa00;
 }
 .purple{
     box-shadow: 0 0 30px #9000ff;
+    border-color: #9000ff;
 }
 .yellow{
     box-shadow: 0 0 30px #ffff00;
+    border-color: #ffff00;
 }
 .pink{
     box-shadow: 0 0 30px #DD00ff;
+    border-color: #DD00ff;
 }
 
 .btn-back:disabled {
@@ -187,9 +194,10 @@ header button {
     width: 100%;
     padding: 8px 36px 8px 12px;
     border-radius: 8px;
-    border: 1px solid #aaffaa99;
+    border: 1px solid #aaffaa;
+    box-shadow:0 0 10px#aaffaa;
     background: transparent;
-    color: #ddd;
+    color: #070;
     outline: none;
 }
 
@@ -221,8 +229,8 @@ header button {
 .sort-select {
     background: transparent;
     color: #ddd;
-    border: 1px solid yellow;
-    box-shadow: 0 0 5px #dd0;
+    border-color: #ffff00;
+    box-shadow: 0 0 10px #dd0;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 0.8rem;
@@ -279,7 +287,7 @@ header button {
     text-align: center;
     min-height: 140px;
     position: relative;
-    border: 1px solid #9000ff;
+    background:#9000ff33;
     box-shadow: 0 0 10px #9000ff;
 }
 
@@ -292,7 +300,7 @@ header button {
 .card.trash-folder {
     border: 1px dashed #ef4444;
     box-shadow: 0 0 20px #700;
-    background: transparent;
+    background: #70000077;
 }
 
 .card .icon {
@@ -371,6 +379,8 @@ header button {
     width: 85%;
     max-width: 360px;
     border: 1px solid #aaffaa;
+    box-shadow: 0 0 30px #aaffaa;
+    
 }
 
 .modal-title, .new-modal-title {
@@ -380,6 +390,16 @@ header button {
     text-align: center;
     color: #ddd;
 }
+.new-btn-group {
+    display: flex; 
+    justify-content: space-around; /* または space-between / center */
+    align-items: center;
+    width: 100%;
+}
+
+.new-btn-group button{
+    font-size:1.5rem;
+}
 
 .move-folder-item {
     display: block;
@@ -387,6 +407,7 @@ header button {
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     color: #ddd;
+    margin: 0 auto;
 }
 
 .move-folder-item:hover {
@@ -423,6 +444,9 @@ header button {
     outline: none;
     background: transparent;
     color: #ddd;
+}
+.editor-title placeholder{
+    font-color:#070;
 }
 
 #editor {
