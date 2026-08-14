@@ -8,16 +8,19 @@
     --border-color: #9000FF;
 }
 
-*,*::before,::after{
-            box-sizing: border-box;
-        }
-html{
-            background-color: #000;
-            margin: 0;
-            padding: 0;
-            min-height: 100dvh;
-            width: 100%;
-        }
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+    width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+}
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -27,6 +30,7 @@ body {
     color: var(--text-color);
     position: relative;
     display: block;
+    overflow-x: hidden;
 }
 
 /* 蛍のエフェクト */
@@ -51,7 +55,6 @@ body {
     10% {
         opacity: 0.9;
     }
-    /* 途中で左右・上下にゆらゆら揺れる軌道を追加 */
     25% {
         transform: translate(calc(var(--tx) * 0.3 + 15px), calc(var(--ty) * 0.25 - 10px)) scale(1.1);
     }
@@ -78,7 +81,8 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    display: block;
+    display: flex;
+    align-items: center;
     padding: 10px 16px;
     background: transparent;
     backdrop-filter: blur(10px);
@@ -92,8 +96,6 @@ header button {
     display: inline-block;
     vertical-align: middle;
 }
-
-
 
 /* パンくずリスト */
 .breadcrumb {
@@ -120,20 +122,20 @@ header button {
 }
 
 /* ボタン装飾 */
-.push{
+.push {
     color: #ddd;
-    background:transparent;
+    background: transparent;
     padding: 6px 12px;
     border-radius: 8px;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     margin-right: 6px;
-    transition:transform 0.1s,background 0.2s;
+    transition: transform 0.1s, background 0.2s;
     will-change: transform, background;
-    
 }
-.push:hover{
+
+.push:hover {
     background: #77777777;
 }
 
@@ -142,30 +144,12 @@ header button {
     background: #aaaaaa77;
 }
 
-.red{
-    box-shadow: 0 0 30px #700000;
-    border-color: #700000;
-}
-.blue{
-    box-shadow: 0 0 30px #2B77aa;
-    border-color: #2B77aa;
-}
-.green{
-    box-shadow: 0 0 30px #00aa00;
-    border-color: #00aa00;
-}
-.purple{
-    box-shadow: 0 0 30px #9000ff;
-    border-color: #9000ff;
-}
-.yellow{
-    box-shadow: 0 0 30px #ffff00;
-    border-color: #ffff00;
-}
-.pink{
-    box-shadow: 0 0 30px #DD00ff;
-    border-color: #DD00ff;
-}
+.red { box-shadow: 0 0 30px #700000; border-color: #700000; }
+.blue { box-shadow: 0 0 30px #2B77aa; border-color: #2B77aa; }
+.green { box-shadow: 0 0 30px #00aa00; border-color: #00aa00; }
+.purple { box-shadow: 0 0 30px #9000ff; border-color: #9000ff; }
+.yellow { box-shadow: 0 0 30px #ffff00; border-color: #ffff00; }
+.pink { box-shadow: 0 0 30px #DD00ff; border-color: #DD00ff; }
 
 .btn-back:disabled {
     cursor: not-allowed;
@@ -183,9 +167,10 @@ header button {
     width: 100%;
     margin-bottom: 8px;
     border-radius: 8px;
-    transition:all 0.2s ease;
+    transition: all 0.2s ease;
 }
-.search-wrapper:focus-within{
+
+.search-wrapper:focus-within {
     box-shadow: 0 0 10px #aaffaa;
 }
 
@@ -195,7 +180,7 @@ header button {
     padding: 8px 36px 8px 12px;
     border-radius: 8px;
     border: 1px solid #aaffaa;
-    box-shadow:0 0 10px#aaffaa;
+    box-shadow: 0 0 10px #aaffaa;
     background: transparent;
     color: #070;
     outline: none;
@@ -241,7 +226,9 @@ header button {
 
 /* ゴミ箱バナーエリア */
 .trash-banner {
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: transparent;
     border: 1px dashed #ef4444;
     box-shadow: 0 0 20px #700;
@@ -265,8 +252,7 @@ header button {
     box-shadow: 0 0 30px #700;
 }
 
-
-/* メイン表示エリア */
+/* メイン表示エリア (2段構成) */
 #main-view {
     display: block;
     padding: 10px 16px;
@@ -274,60 +260,74 @@ header button {
     z-index: 1;
 }
 
-/* カード配置 */
-.card {
-    display: inline-block;
-    vertical-align: top;
-    width: calc(50% - 12px);
-    margin: 6px;
-    background: var(--card-bg);
-    border-radius: 12px;
-    padding: 15px;
-    cursor: pointer;
-    text-align: center;
-    min-height: 140px;
-    position: relative;
-    background:#9000ff33;
+.section-container {
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+/* 横長リスト表示 (横スクロール可能・左が新しい) */
+.list-row-container {
+    display: block;
+    gap: 8px;
+    padding-bottom: 8px;
+    scroll-behavior: smooth;
+}
+
+.list-item {
+    display: block;
+    background: #9000ff33;
+    border: 1px solid #9000ff;
     box-shadow: 0 0 10px #9000ff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.1s;
 }
 
-@media (min-width: 600px) {
-    .card {
-        width: calc(33.333% - 12px);
-    }
+.list-item:hover {
+    transform: translateY(-2px);
 }
 
-.card.trash-folder {
+.list-item.trash-folder {
     border: 1px dashed #ef4444;
-    box-shadow: 0 0 20px #700;
+    box-shadow: 0 0 10px #700;
     background: #70000077;
 }
 
-.card .icon {
-    font-size: 2.2rem;
-    margin-bottom: 8px;
+.list-item-icon {
+    font-size: 1.2rem;
+    margin-right: 10px;
+    flex-shrink: 0;
 }
 
-.card-title {
+
+.list-item-title {
+    font-size: 0.9rem;
     font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 5px;
-    word-break: break-all;
     color: #ddd;
+
+    white-space: normal;      /* 折り返しを許可 */
+  word-break: break-word;   /* 単語の途中でも自然に改行 */
+  overflow-wrap: anywhere;  /* 長い英数字や記号でも確実に折り返す */
 }
 
-.card-sub {
-    font-size: 0.75rem;
+.list-item-sub {
+    font-size: 0.7rem;
     color: var(--gray);
+    margin-top: 2px;
 }
 
-/* カード右上ボタン群 */
-.card-actions {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    display: flex;
+.list-item-actions {
+    display: block;
     gap: 4px;
+    margin-left: 6px;
 }
 
 .card-btn {
@@ -338,10 +338,11 @@ header button {
     height: 24px;
     border-radius: 50%;
     cursor: pointer;
-    line-height: 24px;
+    line-height: 22px;
     padding: 0;
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
+    color: #ddd;
 }
 
 .card-btn.card-delete {
@@ -380,7 +381,6 @@ header button {
     max-width: 360px;
     border: 1px solid #aaffaa;
     box-shadow: 0 0 30px #aaffaa;
-    
 }
 
 .modal-title, .new-modal-title {
@@ -390,15 +390,16 @@ header button {
     text-align: center;
     color: #ddd;
 }
+
 .new-btn-group {
     display: flex; 
-    justify-content: space-around; /* または space-between / center */
+    justify-content: space-around;
     align-items: center;
     width: 100%;
 }
 
-.new-btn-group button{
-    font-size:1.5rem;
+.new-btn-group button {
+    font-size: 1.5rem;
 }
 
 .move-folder-item {
@@ -414,8 +415,6 @@ header button {
     background: rgba(255, 255, 255, 0.05);
 }
 
-
-
 /* エディタ画面 */
 #editor-view {
     position: fixed;
@@ -423,7 +422,7 @@ header button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--bg-color);
+    background: #000;
     z-index: 500;
     display: none;
     padding-top: 60px;
@@ -435,24 +434,49 @@ header button {
     border-bottom: 1px solid var(--border-color);
 }
 
+.editor-title-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
 .editor-title {
-    display: block;
-    width: 100%;
+    flex: 1;
     font-size: 1.1rem;
     font-weight: 600;
     border: none;
     outline: none;
     background: transparent;
     color: #ddd;
-}
-.editor-title placeholder{
-    font-color:#070;
+    padding-right: 32px;
 }
 
+.btn-title-clear {
+    position: absolute;
+    right: 0;
+    background: transparent;
+    border: none;
+    color: var(--gray);
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+}
+
+.btn-title-clear:hover {
+    color: #ef4444;
+}
+
+.editor-body-wrapper {
+    display: flex;
+    height: calc(100vh - 120px);
+}
+
+/* textarea 挙動・揺れ調整 (⑤ & ⑥) */
 #editor {
-    display: block;
-    width: 100%;
-    height: calc(100vh - 130px);
+    flex: 1;
+    height: 100%;
     border: none;
     padding: 16px;
     font-size: 1rem;
@@ -461,6 +485,30 @@ header button {
     outline: none;
     background: transparent;
     color: #ddd;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+
+}
+
+/* エディタ右側操作ボタン群 (④) */
+.editor-side-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.editor-side-tools button {
+    margin-right: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* 通知メッセージ */
