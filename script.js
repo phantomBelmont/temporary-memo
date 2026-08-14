@@ -1,6 +1,3 @@
-// ==========================================
-// 0. セキュリティ対策（XSSエスケープ）
-// ==========================================
 function escapeHTML(str) {
     return (str || '').replace(/[&<>"']/g, function(match) {
         const escape = {
@@ -12,6 +9,17 @@ function escapeHTML(str) {
         };
         return escape[match];
     });
+}
+
+// 空欄時に使用する標準日時フォーマット生成
+function getDefaultTitle() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    return `${y}/${m}/${d} ${hh}:${mm}`;
 }
 
 // ステータスメッセージ表示関数
@@ -42,7 +50,6 @@ let undoStack = [];
 let redoStack = [];
 const MAX_STACK_SIZE = 50;
 
-// ゴミ箱判定の確実なヘルパー関数
 function checkIsTrash(item) {
     if (!item) return false;
     return item.isTrash === true || item.isTrash === 'true' || item.isTrash === 1;
@@ -52,16 +59,16 @@ function checkIsTrash(item) {
 // 2. DOM要素の取得
 // ==========================================
 const mainView = document.getElementById('main-view');
-const currentPathTitle = document.getElementById('current-path');
 const breadcrumbEl = document.getElementById('breadcrumb');
 const btnBack = document.getElementById('btn-back');
 const btnNew = document.getElementById('btn-new');
 const btnMove = document.getElementById('btn-move');
 const btnDelete = document.getElementById('btn-delete');
-const btnSave = document.getElementById('btn-save');
 const btnUndo = document.getElementById('btn-undo');
 const btnCopy = document.getElementById('btn-copy');
 const btnClear = document.getElementById('btn-clear');
+const btnClearHeader = document.getElementById('btn-clear-header');
+const btnTitleClear = document.getElementById('btn-title-clear');
 
 const searchInput = document.getElementById('search-input');
 const btnSearchClear = document.getElementById('btn-search-clear');
@@ -112,7 +119,6 @@ function initDB() {
     });
 }
 
-// DB内のデータ不整合・孤立フォルダの一括クリーンアップ
 function sanitizeDatabase() {
     return new Promise((resolve) => {
         const tx = db.transaction([STORE_NAME], 'readwrite');
@@ -124,15 +130,11 @@ function sanitizeDatabase() {
             const itemMap = new Map();
             items.forEach(item => itemMap.set(item.id, item));
 
-            // 親が存在しない孤立フォルダ・ノートを検出してDBから一掃する
             items.forEach(item => {
-                // 1. isTrashの補正
                 if (item.isTrash === undefined || item.isTrash === null) {
                     item.isTrash = false;
                     store.put(item);
                 }
-
-                // 2. 孤立アイテムの削除（親がroot/trash以外で、親アイテムがDB上に存在しないもの）
                 if (item.parentId && item.parentId !== 'root' && item.parentId !== 'trash') {
                     if (!itemMap.has(item.parentId)) {
                         store.delete(item.id);
@@ -148,11 +150,10 @@ function sanitizeDatabase() {
 
 function createFireflies() {
     const count = 15;
-
     for (let i = 0; i < count; i++) {
         const firefly = document.createElement('div');
         firefly.className = 'firefly';
-        
+
         const randomizeFirefly = (el) => {
             const startX = Math.random() * 100;
             const startY = Math.random() * 100;
@@ -166,7 +167,6 @@ function createFireflies() {
         };
 
         randomizeFirefly(firefly);
-
         firefly.style.animationDelay = `${Math.random() * 8}s`;
         firefly.style.animationDuration = `${8 + Math.random() * 6}s`;
 
@@ -178,15 +178,12 @@ function createFireflies() {
     }
 }
 
-// 自分または先祖フォルダがゴミ箱に入っているか（＋親が存在しない孤立フォルダでないか）完全判定
 function isFolderInTrash(folder, itemMap) {
     let current = folder;
     let visited = new Set();
-    
+
     while (current) {
         if (checkIsTrash(current)) return true;
-        
-        // 親がrootなら正常なフォルダ構造
         if (current.parentId === 'root') return false;
         if (current.parentId === 'trash') return true;
         if (!current.parentId) return false;
@@ -194,17 +191,12 @@ function isFolderInTrash(folder, itemMap) {
         if (visited.has(current.parentId)) break;
         visited.add(current.parentId);
 
-        // 親フォルダが存在しない＝削除済み親の残骸（孤立フォルダ）なのでゴミ箱同等扱いにして除外
-        if (!itemMap.has(current.parentId)) {
-            return true;
-        }
-
+        if (!itemMap.has(current.parentId)) return true;
         current = itemMap.get(current.parentId);
     }
     return false;
 }
 
-// 移動対象フォルダの子孫フォルダかどうか判定（循環参照防止）
 function isDescendantOf(targetFolderId, moveItemId, itemMap) {
     let current = itemMap.get(targetFolderId);
     let visited = new Set();
@@ -220,7 +212,6 @@ function isDescendantOf(targetFolderId, moveItemId, itemMap) {
     return false;
 }
 
-// 指定したIDの配下にある全子孫アイテムのIDリストを取得する関数
 function getAllDescendantIds(parentId, allItems) {
     let result = [];
     const children = allItems.filter(item => item.parentId === parentId);
@@ -287,7 +278,7 @@ function loadItems() {
             return 0;
         });
 
-        renderGallery(items);
+        renderSections(items);
         renderBreadcrumb();
         updateBackButton();
     };
@@ -304,7 +295,6 @@ function renderBreadcrumb() {
             if (index < pathStack.length - 1) {
                 pathStack = pathStack.slice(0, index + 1);
                 currentFolderId = path.id;
-                if (currentPathTitle) currentPathTitle.textContent = path.title;
                 loadItems();
             }
         });
@@ -319,7 +309,8 @@ function renderBreadcrumb() {
     });
 }
 
-function renderGallery(items) {
+// フォルダ段（1段目）とメモ段（2段目）に分離して描写
+function renderSections(items) {
     if (!mainView) return;
     mainView.innerHTML = '';
 
@@ -332,107 +323,148 @@ function renderGallery(items) {
         `;
         trashBanner.querySelector('#btn-empty-trash').addEventListener('click', emptyTrash);
         mainView.appendChild(trashBanner);
+
+        const trashContainer = document.createElement('div');
+        trashContainer.className = 'list-row-container';
+        items.forEach(item => trashContainer.appendChild(createListItem(item)));
+        mainView.appendChild(trashContainer);
+        return;
     }
 
-    items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = `card ${item.type}`;
-        
-        const icon = item.type === 'folder' ? '📁' : '📄';
-        const subText = item.type === 'folder' ? '' : `${item.text ? item.text.length : 0} 文字`;
+    const folders = items.filter(i => i.type === 'folder');
+    const notes = items.filter(i => i.type === 'note');
 
-        if (currentFolderId === 'trash') {
-            card.innerHTML = `
-                <div class="icon">${icon}</div>
-                <div class="card-title">${escapeHTML(item.title) || '無題'}</div>
-                <div class="card-sub">${escapeHTML(subText)}</div>
-                <div style="margin-top:10px;">
-                    <button class="card-restore-btn" style="background:#070;color:#fff;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;">↩️ 復元</button>
-                    <button class="card-delete-perm-btn" style="background:#ef4444;color:#fff;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;">× 削除</button>
-                </div>
-            `;
+    // 1段目: フォルダ領域
+    const folderSection = document.createElement('div');
+    folderSection.className = 'section-container';
+    folderSection.innerHTML = `<div class="section-title">📁 フォルダ</div>`;
+    const folderRow = document.createElement('div');
+    folderRow.className = 'list-row-container';
 
-            card.querySelector('.card-restore-btn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                restoreItem(item.id);
-            });
-            card.querySelector('.card-delete-perm-btn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                deletePermanently(item.id);
-            });
-        } else {
-            const editBtnHtml = item.type === 'folder' ? `<button class="card-btn card-edit" title="名前変更">✏️</button>` : '';
-            card.innerHTML = `
-                <div class="card-actions">
-                    ${editBtnHtml}
-                    <button class="card-btn card-move" title="移動">📦</button>
-                    <button class="card-btn card-delete" title="ゴミ箱へ">🗑️</button>
-                </div>
-                <div class="icon">${icon}</div>
-                <div class="card-title">${escapeHTML(item.title) || '無題'}</div>
-                <div class="card-sub">${escapeHTML(subText)}</div>
-            `;
+    // ルートの場合ゴミ箱も先頭表示
+    const searchQuery = searchInput ? searchInput.value.trim() : '';
+    if (currentFolderId === 'root' && searchQuery === '') {
+        const trashItem = document.createElement('div');
+        trashItem.className = 'list-item trash-folder';
+        trashItem.innerHTML = `
+            <div class="list-item-icon">🗑️</div>
+            <div class="list-item-info">
+                <div class="list-item-title">ゴミ箱</div>
+            </div>
+        `;
+        trashItem.addEventListener('click', openTrash);
+        folderRow.appendChild(trashItem);
+    }
 
-            if (item.type === 'folder') {
-                const btnEdit = card.querySelector('.card-edit');
-                if (btnEdit) {
-                    btnEdit.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        renameFolder(item.id, item.title);
-                    });
-                }
+    folders.forEach(item => folderRow.appendChild(createListItem(item)));
+    folderSection.appendChild(folderRow);
+    mainView.appendChild(folderSection);
+
+    // 2段目: メモ領域
+    const noteSection = document.createElement('div');
+    noteSection.className = 'section-container';
+    noteSection.innerHTML = `<div class="section-title">📄 メモ</div>`;
+    const noteRow = document.createElement('div');
+    noteRow.className = 'list-row-container';
+
+    notes.forEach(item => noteRow.appendChild(createListItem(item)));
+    noteSection.appendChild(noteRow);
+    mainView.appendChild(noteSection);
+
+    if (items.length === 0) {
+    let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'ここは空です<br>+ Add で作れるよ 🪄';
+    mainView.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
+} else {
+    // 中身がある場合は「フォルダ」「メモ」の各セクションを追加
+    mainView.appendChild(folderSection);
+    mainView.appendChild(noteSection);
+}
+}
+
+// リスト要素生成
+function createListItem(item) {
+    const el = document.createElement('div');
+    el.className = `list-item ${item.type}`;
+
+    const icon = item.type === 'folder' ? '📁' : '📄';
+    const charCount = item.type === 'note' ? `${item.text ? item.text.length : 0}文字` : '';
+    const displayTitle = escapeHTML(item.title) || getDefaultTitle();
+
+    if (currentFolderId === 'trash') {
+        el.innerHTML = `
+            <div class="list-item-icon">${icon}</div>
+            <div class="list-item-info">
+                <div class="list-item-title">${displayTitle}</div>
+            </div>
+            <div class="list-item-actions">
+                <button class="card-btn card-restore" title="復元">↩️</button>
+                <button class="card-btn card-delete-perm" title="削除">×</button>
+            </div>
+        `;
+        el.querySelector('.card-restore').addEventListener('click', (e) => {
+            e.stopPropagation();
+            restoreItem(item.id);
+        });
+        el.querySelector('.card-delete-perm').addEventListener('click', (e) => {
+            e.stopPropagation();
+            deletePermanently(item.id);
+        });
+    } else {
+        const editBtnHtml = item.type === 'folder' ? `<button class="card-btn card-edit" title="名前変更">✏️</button>` : '';
+        el.innerHTML = `
+            <div class="list-item-icon">${icon}</div>
+            <div class="list-item-info">
+                <div class="list-item-title">${displayTitle}</div>
+                ${charCount ? `<div class="list-item-sub">${charCount}</div>` : ''}
+            </div>
+            <div class="list-item-actions">
+                ${editBtnHtml}
+                <button class="card-btn card-move" title="移動">📦</button>
+                <button class="card-btn card-delete" title="ゴミ箱へ">🗑️</button>
+            </div>
+        `;
+
+        if (item.type === 'folder') {
+            const btnEdit = el.querySelector('.card-edit');
+            if (btnEdit) {
+                btnEdit.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    renameFolder(item.id, item.title);
+                });
             }
-
-            card.querySelector('.card-delete').addEventListener('click', (e) => {
-                e.stopPropagation();
-                moveToTrash(item.id);
-            });
-
-            card.querySelector('.card-move').addEventListener('click', (e) => {
-                e.stopPropagation();
-                openMoveModalForItem(item.id, item.type, item.title);
-            });
-
-            card.addEventListener('click', () => {
-                if (item.type === 'folder') {
-                    openFolder(item.id, item.title);
-                } else {
-                    openEditor(item.id);
-                }
-            });
         }
 
-        mainView.appendChild(card);
-    });
+        el.querySelector('.card-delete').addEventListener('click', (e) => {
+            e.stopPropagation();
+            moveToTrash(item.id);
+        });
 
-    const searchQuery = searchInput ? searchInput.value.trim() : '';
+        el.querySelector('.card-move').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openMoveModalForItem(item.id, item.type, item.title);
+        });
 
-    if (currentFolderId === 'root' && searchQuery === '') {
-        const trashCard = document.createElement('div');
-        trashCard.className = 'card trash-folder';
-        trashCard.innerHTML = `
-            <div class="icon">🗑️</div>
-            <div class="card-title">ゴミ箱</div>
-        `;
-        trashCard.addEventListener('click', openTrash);
-        mainView.appendChild(trashCard);
-    } else if (items.length === 0 && currentFolderId !== 'trash') {
-        let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'ここは空です<br>+ Add で作れるよ 🪄';
-        mainView.innerHTML += `<div class="empty-state">${emptyMsg}</div>`;
+        el.addEventListener('click', () => {
+            if (item.type === 'folder') {
+                openFolder(item.id, item.title);
+            } else {
+                openEditor(item.id);
+            }
+        });
     }
+
+    return el;
 }
 
 function openFolder(id, title) {
-    pathStack.push({ id: id, title: title });
+    pathStack.push({ id: id, title: title || getDefaultTitle() });
     currentFolderId = id;
-    if (currentPathTitle) currentPathTitle.textContent = title;
     loadItems();
 }
 
 function openTrash() {
     pathStack.push({ id: 'trash', title: 'ゴミ箱' });
     currentFolderId = 'trash';
-    if (currentPathTitle) currentPathTitle.textContent = 'ゴミ箱';
     loadItems();
 }
 
@@ -445,7 +477,6 @@ function goBack() {
     pathStack.pop();
     const prev = pathStack[pathStack.length - 1];
     currentFolderId = prev.id;
-    if (currentPathTitle) currentPathTitle.textContent = prev.title;
     loadItems();
 }
 
@@ -479,10 +510,10 @@ function undoEditor() {
     if (undoStack.length > 1) {
         const currentState = undoStack.pop();
         redoStack.push(currentState);
-        
+
         const previousState = undoStack[undoStack.length - 1];
         editorText.value = previousState;
-        
+
         triggerAutoSave();
         showStatus('元に戻しました ↩️');
     } else {
@@ -529,8 +560,10 @@ function addNote() {
     editorText.value = '';
     resetUndoHistory('');
 
+    const defaultTitle = getDefaultTitle();
+
     const itemData = {
-        title: '無題',
+        title: defaultTitle,
         text: '',
         type: 'note',
         parentId: currentFolderId === 'trash' ? 'root' : currentFolderId,
@@ -560,7 +593,8 @@ function triggerAutoSave() {
 function saveNoteRealtime() {
     if (currentNoteId === null) return;
 
-    const title = editorTitle.value.trim() || '無題';
+    // 空欄時は現在の日時をデフォルト適用
+    const title = editorTitle.value.trim() || getDefaultTitle();
     const text = editorText.value;
     const updatedAt = new Date().toISOString();
 
@@ -598,10 +632,7 @@ function switchView(view) {
         if (btnNew) btnNew.style.display = currentFolderId === 'trash' ? 'none' : 'inline-block';
         if (btnMove) btnMove.style.display = 'none';
         if (btnDelete) btnDelete.style.display = 'none';
-        if (btnUndo) btnUndo.style.display = 'none';
-        if (btnCopy) btnCopy.style.display = 'none';
-        if (btnClear) btnClear.style.display = 'none';
-        if (btnSave) btnSave.style.display = 'none';
+        if (btnClearHeader) btnClearHeader.style.display = 'none';
 
         loadItems();
     } else {
@@ -611,12 +642,9 @@ function switchView(view) {
         if (breadcrumbEl) breadcrumbEl.style.display = 'none';
 
         if (btnNew) btnNew.style.display = 'none';
+        if (btnClearHeader) btnClearHeader.style.display = 'inline-block';
         if (btnMove) btnMove.style.display = 'inline-block';
         if (btnDelete) btnDelete.style.display = 'inline-block';
-        if (btnUndo) btnUndo.style.display = 'inline-block';
-        if (btnCopy) btnCopy.style.display = 'inline-block';
-        if (btnClear) btnClear.style.display = 'inline-block';
-        if (btnSave) btnSave.style.display = 'none';
 
         if (editorTitle) editorTitle.focus();
     }
@@ -627,7 +655,7 @@ function switchView(view) {
 // 7. ゴミ箱・移動・削除・フォルダ関連処理
 // ==========================================
 function addFolder(rawName) {
-    const folderName = (rawName || '').trim() === '' ? '無題' : rawName.trim();
+    const folderName = (!rawName || rawName.trim() === '') ? getDefaultTitle() : rawName.trim();
 
     const folderData = {
         title: folderName,
@@ -652,7 +680,7 @@ function renameFolder(folderId, currentTitle) {
     let newName = prompt("フォルダ名を入力しよう！🐱:", currentTitle);
 
     if (newName !== null) {
-        const finalName = newName.trim() === "" ? "無題" : newName.trim();
+        const finalName = newName.trim() === "" ? getDefaultTitle() : newName.trim();
 
         const transaction = db.transaction([STORE_NAME], 'readwrite');
         const store = transaction.objectStore(STORE_NAME);
@@ -716,7 +744,6 @@ function restoreItem(id) {
     };
 }
 
-// 単体完全削除（子要素も連鎖削除）
 function deletePermanently(id) {
     if (!confirm('完全に削除しますか？（フォルダ内のメモも全て削除されます）')) return;
 
@@ -739,7 +766,6 @@ function deletePermanently(id) {
     };
 }
 
-// ゴミ箱を空にする（配下の子フォルダ・子メモも完全追跡して連鎖削除）
 function emptyTrash() {
     const transaction = db.transaction([STORE_NAME], 'readonly');
     const store = transaction.objectStore(STORE_NAME);
@@ -748,14 +774,13 @@ function emptyTrash() {
     req.onsuccess = () => {
         const allItems = req.result || [];
         const trashItems = allItems.filter(item => checkIsTrash(item));
-        
+
         if (trashItems.length === 0) {
             showStatus('すでに空だよ 🗑️');
             return;
         }
 
         if (confirm(`ゴミ箱の中にあるアイテムをすべて完全に削除しますか？\n※元に戻せないけど本当に削除していいですか...？🐱`)) {
-            // 削除対象IDの収集（ゴミ箱直下のアイテム ＋ その配下の全子孫）
             let allDeleteIds = new Set();
             trashItems.forEach(item => {
                 allDeleteIds.add(item.id);
@@ -790,15 +815,9 @@ function openMoveModalForItem(id, type, title) {
 
     request.onsuccess = () => {
         const allItems = request.result || [];
-        
         const itemMap = new Map();
         allItems.forEach(item => itemMap.set(item.id, item));
 
-        // 厳格フィルタ:
-        // 1. フォルダであること
-        // 2. 自分自身ではないこと
-        // 3. 自分自身の子孫フォルダではないこと
-        // 4. 先祖も含めゴミ箱内（isTrash: true）または親不在の孤立フォルダでないこと
         const folders = allItems.filter(item => {
             if (item.type !== 'folder') return false;
             if (item.id === id) return false;
@@ -806,7 +825,7 @@ function openMoveModalForItem(id, type, title) {
             if (isFolderInTrash(item, itemMap)) return false;
             return true;
         });
-        
+
         if (moveList) moveList.innerHTML = '';
 
         const rootBtn = document.createElement('div');
@@ -833,12 +852,6 @@ function openMoveModalForItem(id, type, title) {
 
         if (moveModal) moveModal.style.display = 'block';
     };
-}
-
-function openMoveModal() {
-    if (currentNoteId !== null) {
-        openMoveModalForItem(currentNoteId, 'note', editorTitle ? editorTitle.value : '');
-    }
 }
 
 function performMove(id, newParentId) {
@@ -874,7 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (btnBack) btnBack.addEventListener('click', goBack);
-    
+
     if (btnNew) {
         btnNew.addEventListener('click', () => {
             if (newModal) newModal.style.display = 'block';
@@ -908,6 +921,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // モーダル外枠クリックで閉じる処理 (⑧)
+    if (newModal) {
+        newModal.addEventListener('click', (e) => {
+            if (e.target === newModal) {
+                newModal.style.display = 'none';
+            }
+        });
+    }
+    if (moveModal) {
+        moveModal.addEventListener('click', (e) => {
+            if (e.target === moveModal) {
+                moveModal.style.display = 'none';
+            }
+        });
+    }
+
     if (btnDelete) {
         btnDelete.addEventListener('click', () => {
             if (currentNoteId !== null) moveToTrash(currentNoteId);
@@ -922,21 +951,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (btnClearHeader) btnClearHeader.addEventListener('click', clearEditorText);
     if (btnUndo) btnUndo.addEventListener('click', undoEditor);
     if (btnCopy) btnCopy.addEventListener('click', copyAllText);
     if (btnClear) btnClear.addEventListener('click', clearEditorText);
 
+    // タイトル全クリアボタン (③)
+    if (btnTitleClear) {
+        btnTitleClear.addEventListener('click', () => {
+            if (editorTitle) {
+                editorTitle.value = '';
+                triggerAutoSave();
+            }
+        });
+    }
+
     if (editorTitle) editorTitle.addEventListener('input', triggerAutoSave);
-    
+
     if (editorText) {
         editorText.addEventListener('input', triggerAutoSave);
-
-        editorText.addEventListener('paste', () => {
-            recordUndoState();
-        });
-        editorText.addEventListener('cut', () => {
-            recordUndoState();
-        });
+        editorText.addEventListener('paste', () => recordUndoState());
+        editorText.addEventListener('cut', () => recordUndoState());
     }
 
     if (searchInput) {
@@ -952,3 +987,29 @@ document.addEventListener('DOMContentLoaded', () => {
         sortSelect.addEventListener('change', () => loadItems());
     }
 });
+
+function setupTouchEvents() {
+  const mainView = document.getElementById('main-view');
+  if (!mainView) return;
+
+mainView.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+      const pointerY = e.touches[0].clientY;
+      const rect = mainView.getBoundingClientRect();
+      const threshold = 40;
+
+      if (pointerY < rect.top + threshold) {
+        mainView.scrollTop -= AUTO_SCROLL_SPEED;
+      } else if (pointerY > rect.bottom - threshold) {
+        mainView.scrollTop += AUTO_SCROLL_SPEED;
+      }
+    }
+  }, { passive: true });
+}
+
+
+
+
+
+
+
