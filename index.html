@@ -24,11 +24,9 @@
 <header>
     <button class="btn-back pink push" disabled id="btn-back">←</button>
     <button class="green push" id="btn-new">+</button>
-    <button class="blue push" id="btn-move">Move</button>
-    <button class="red push" id="btn-delete">🗑️</button>
-    <button class="purple push" id="btn-undo" title="元に戻す">↩️Undo</button>
-    <button class="green push" id="btn-copy" title="全コピー">📋Copy</button>
-    <button class="yellow push" id="btn-clear" title="クリア">🧹Clear</button>
+    <button class="yellow push" id="btn-clear-header" style="display:none;" title="クリア">🧹 Clear</button>
+    <button class="blue push" id="btn-move" style="display:none;">Move</button>
+    <button class="red push" id="btn-delete" style="display:none;">🗑️</button>
 </header>
 
 <!-- パンくずリスト -->
@@ -51,15 +49,26 @@
     </div>
 </div>
 
-<!-- メイン表示領域 -->
+<!-- メイン表示領域（1段目：フォルダ / 2段目：メモ） -->
 <div id="main-view"></div>
 
 <!-- エディタ画面 -->
 <div id="editor-view">
     <div class="editor-header">
-        <input type="text" id="editor-title" class="editor-title" placeholder="タイトルを入力...">
+        <div class="editor-title-wrapper">
+            <input type="text" id="editor-title" class="editor-title" placeholder="タイトルを入力...">
+            <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
+        </div>
     </div>
-    <textarea id="editor" placeholder="ここにメモを入力..."></textarea>
+    <div class="editor-body-wrapper">
+        <textarea id="editor" placeholder="ここにメモを入力..."></textarea>
+        <!-- 右側の操作ボタン群 -->
+        <div class="editor-side-tools">
+            <button class="push green" id="btn-copy" title="全コピー">📋</button>
+            <button class="push yellow" id="btn-clear" title="クリア">🧹</button>
+            <button class="push purple" id="btn-undo" title="元に戻す">↩️</button>
+        </div>
+    </div>
 </div>
 
 <!-- 移動モーダル -->
