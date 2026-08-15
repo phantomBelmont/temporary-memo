@@ -21,10 +21,13 @@
 </head>
 <body>
 
+<div class="stars"></div>
+
+
 <header>
     <button class="btn-back pink push" disabled id="btn-back">←</button>
     <button class="green push" id="btn-new">+</button>
-    <button class="blue push" id="btn-move" style="display:none;">Move</button>
+    <button class="blue push" id="btn-move" style="display:none;">🚐</button>
     <button class="red push" id="btn-delete" style="display:none;">🗑️</button>
 </header>
 
@@ -55,7 +58,7 @@
 <div id="editor-view">
     <div class="editor-header">
         <div class="editor-title-wrapper">
-            <input type="text" id="editor-title" class="editor-title" placeholder="タイトルを入力...">
+            <input type="text" id="editor-title" class="editor-title" >
             <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
         </div>
     </div>
@@ -84,8 +87,8 @@
     <div class="new-modal-content">
         <div class="new-modal-title">Add what？🐱</div>
         <div class="new-btn-group">
-            <button id="btn-new-folder" class="purple push">📁</button>
-            <button id="btn-new-note" class="blue push">📄</button>
+            <button id="btn-new-folder" class="purple push">📚</button>
+            <button id="btn-new-note" class="blue push"></button>
             <button id="btn-new-cancel" class="red push">Cancel</button>
         </div>
     </div>
