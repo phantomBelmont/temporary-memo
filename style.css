@@ -32,6 +32,13 @@ body {
     display: block;
     overflow-x: hidden;
 }
+input, textarea {
+    caret-color: #aaffaa;
+}
+button, .push, .card-btn {
+    -webkit-tap-highlight-color: transparent;
+}
+
 
 /* 蛍のエフェクト */
 .firefly {
@@ -43,7 +50,7 @@ body {
     box-shadow: 0 0 8px 3px #aaffaa;
     opacity: 0;
     pointer-events: none;
-    animation: float 10s infinite linear;
+    animation: float  infinite linear;
     z-index: 2000;
 }
 
@@ -81,15 +88,12 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
-    
+
     padding: 10px 16px;
     background: transparent;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid #00BBFFaa;
-    box-shadow: 0 0 5px #00BBFF;
     white-space: nowrap;
     overflow-x: auto;
-    
+
 }
 
 header button {
@@ -103,7 +107,6 @@ header button {
     padding: 10px 20px 0 20px;
     font-size: 1.2rem;
     color: #DD00FFcc;
-    font-weight: 600;
 }
 
 .breadcrumb-item {
@@ -113,6 +116,7 @@ header button {
 
 .breadcrumb-item:hover {
     text-decoration: underline;
+    color:#0ff;
 }
 
 .breadcrumb-separator {
@@ -280,10 +284,11 @@ header button {
 }
 
 .list-item {
-    display: block;
-    background: #9000ff33;
-    border: 1px solid #9000ff;
-    box-shadow: 0 0 10px #9000ff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 内容とボタン群を両端に配置 */
+    background: transparent;
+    border: 1px solid #333;
     border-radius: 10px;
     padding: 10px 12px;
     cursor: pointer;
@@ -293,12 +298,13 @@ header button {
 
 .list-item:hover {
     transform: translateY(-2px);
+    color:#0ff;
+    box-shadow:0 0 10px #0ff;
 }
 
 .list-item.trash-folder {
     border: 1px dashed #ef4444;
     box-shadow: 0 0 10px #700;
-    background: #70000077;
 }
 
 .list-item-icon {
@@ -309,7 +315,7 @@ header button {
 
 
 .list-item-title {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: #ddd;
 
@@ -325,28 +331,26 @@ header button {
 }
 
 .list-item-actions {
-    display: block;
-    gap: 4px;
-    margin-left: 6px;
+    display: flex;         /* block から flex に変更 */
+    align-items: center;   /* 垂直中央揃え */
+    gap: 16px;              /* ボタン同士の間隔 */
+    margin-left: auto;     /* 右寄せにしたい場合に有効 */
 }
+
 
 .card-btn {
     background: transparent;
-    border: 1px solid #aaffaaaa;
-    box-shadow: 0 0 2px #aaffaa;
+    border: none;
     width: 24px;
     height: 24px;
-    border-radius: 50%;
     cursor: pointer;
     line-height: 22px;
     padding: 0;
     text-align: center;
-    font-size: 11px;
+    font-size: 1.5rem;
     color: #ddd;
-}
 
-.card-btn.card-delete {
-    background: #70000077;
+
 }
 
 .empty-state {
@@ -431,32 +435,39 @@ header button {
 .editor-header {
     display: block;
     padding: 10px 16px;
-    border-bottom: 1px solid var(--border-color);
+    background: transparent;
 }
+
 
 .editor-title-wrapper {
     display: flex;
     align-items: center;
     position: relative;
+    background: transparent;
 }
 
 .editor-title {
     flex: 1;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    border: none;
     outline: none;
     background: transparent;
-    color: #ddd;
+    color: #aaffaaaa;
     padding-right: 32px;
+    border-color:#9000FF;
+    border-radius: 8px;
 }
-
+.editor-title:focus-within{
+    box-shadow: 0 0 15px #9000FF;
+}
 .btn-title-clear {
     position: absolute;
     right: 0;
     background: transparent;
-    border: none;
-    color: var(--gray);
+    border: 1px dashed #700;
+    background: #700;
+    border-radius: 50%;
+    color: #ddd;
     font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
@@ -477,7 +488,8 @@ header button {
 #editor {
     flex: 1;
     height: 100%;
-    border: none;
+    border: 0.7px dashed #0ff;
+    box-shadow: 0 0 10px #0ff;
     padding: 16px;
     font-size: 1.1rem;
     line-height: 1.6;
@@ -498,6 +510,7 @@ header button {
     gap: 12px;
     padding: 12px 8px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
+    background: #00ffff33;
 }
 
 .editor-side-tools button {
@@ -505,7 +518,7 @@ header button {
     width: 40px;
     height: 40px;
     padding: 0;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -528,3 +541,30 @@ header button {
     z-index: 2000;
     border: 1px solid var(--accent-color);
 }
+
+  .stars{
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            top:0; left:0;
+            z-index: -1;
+           pointer-events:none;
+
+            background-size: 200px 200px;
+            background-image: radial-gradient(2px 2px at 50px 50px, orange, rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 20px 20px, rgb(3, 238, 3), rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 10px 30px, pink, rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 150px 120px, aqua, rgba(0,0,0,0)),
+            radial-gradient(2px 2px at 120px 150px, white, rgba(0,0,0,0));
+            background-repeat: repeat;
+
+            animation: moveDiagonal 5s ease-in-out infinite, twinkle 2s ease-in-out infinite;
+            will-change:opacity;
+        }
+            @keyframes moveDiagonal{
+                from{background-position: 0 0;}
+                to{background-position: 200px 200px;}
+            }
+            @keyframes twinkle{
+                0%,100%{opacity:1;} 50%{opacity: 0.2;}
+            }
