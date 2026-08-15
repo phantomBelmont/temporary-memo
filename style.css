@@ -481,7 +481,8 @@ header button {
 
 .editor-body-wrapper {
     display: flex;
-    height: calc(100vh - 120px);
+    height: calc(100dvh - 120px);
+    
 }
 
 /* textarea 挙動・揺れ調整 (⑤ & ⑥) */
@@ -510,7 +511,7 @@ header button {
     gap: 12px;
     padding: 12px 8px;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
-    background: #00ffff33;
+    background: #00ffff22;
 }
 
 .editor-side-tools button {
@@ -547,7 +548,7 @@ header button {
             height: 100%;
             width: 100%;
             top:0; left:0;
-            z-index: 2000;
+            z-index: -1;
            pointer-events:none;
 
             background-size: 200px 200px;
