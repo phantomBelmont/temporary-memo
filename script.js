@@ -337,7 +337,7 @@ function renderSections(items) {
     // 1段目: フォルダ領域
     const folderSection = document.createElement('div');
     folderSection.className = 'section-container';
-    folderSection.innerHTML = `<div class="section-title">📁 フォルダ</div>`;
+    folderSection.innerHTML = `<div class="section-title">📚 フォルダ</div>`;
     const folderRow = document.createElement('div');
     folderRow.className = 'list-row-container';
 
@@ -349,7 +349,7 @@ function renderSections(items) {
         trashItem.innerHTML = `
             <div class="list-item-icon">🗑️</div>
             <div class="list-item-info">
-                <div class="list-item-title">ゴミ箱</div>
+                    <div class="list-item-title">Trash</div>
             </div>
         `;
         trashItem.addEventListener('click', openTrash);
@@ -363,7 +363,7 @@ function renderSections(items) {
     // 2段目: メモ領域
     const noteSection = document.createElement('div');
     noteSection.className = 'section-container';
-    noteSection.innerHTML = `<div class="section-title">📄 メモ</div>`;
+    noteSection.innerHTML = `<div class="section-title">📜 メモ</div>`;
     const noteRow = document.createElement('div');
     noteRow.className = 'list-row-container';
 
@@ -372,7 +372,7 @@ function renderSections(items) {
     mainView.appendChild(noteSection);
 
     if (items.length === 0) {
-    let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'ここは空です<br>+ Add で作れるよ 🪄';
+    let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'このフォルダは空です<br>+ で作れるよ 🪄';
     mainView.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
 } else {
     // 中身がある場合は「フォルダ」「メモ」の各セクションを追加
@@ -386,7 +386,7 @@ function createListItem(item) {
     const el = document.createElement('div');
     el.className = `list-item ${item.type}`;
 
-    const icon = item.type === 'folder' ? '📁' : '📄';
+    const icon = item.type === 'folder' ? '📚' : '📜';
     const charCount = item.type === 'note' ? `${item.text ? item.text.length : 0}文字` : '';
     const displayTitle = escapeHTML(item.title) || getDefaultTitle();
 
@@ -647,7 +647,7 @@ function switchView(view) {
         if (btnDelete) btnDelete.style.display = 'inline-block';
 
         if (editorText) editorText.focus();
-        
+
     }
     updateBackButton();
 }
@@ -671,7 +671,7 @@ function addFolder(rawName) {
     store.add(folderData);
 
     transaction.oncomplete = () => {
-        showStatus('フォルダ作成！ 📁');
+        showStatus('フォルダ作成！ 📚');
         if (newModal) newModal.style.display = 'none';
         loadItems();
     };
@@ -781,7 +781,7 @@ function emptyTrash() {
             return;
         }
 
-        if (confirm(`ゴミ箱の中にあるアイテムをすべて完全に削除しますか？\n※元に戻せないけど本当に削除していいですか...？🐱`)) {
+        if (confirm(`元に戻せないけど本当に削除していいですか...？フォルダの中のアイテムも一緒に消えます🐱`)) {
             let allDeleteIds = new Set();
             trashItems.forEach(item => {
                 allDeleteIds.add(item.id);
@@ -842,7 +842,7 @@ function openMoveModalForItem(id, type, title) {
         folders.forEach(folder => {
             const div = document.createElement('div');
             div.className = 'move-item';
-            div.textContent = `📁 ${folder.title}`;
+            div.textContent = `📚 ${folder.title}`;
             div.style.padding = '8px';
             div.style.cursor = 'pointer';
             div.addEventListener('click', () => {
@@ -871,7 +871,7 @@ function performMove(id, newParentId) {
 
     transaction.oncomplete = () => {
         if (moveModal) moveModal.style.display = 'none';
-        showStatus('移動しました 📦');
+        showStatus('移動しました 🚐');
         loadItems();
     };
 }
@@ -1007,10 +1007,3 @@ mainView.addEventListener('touchmove', (e) => {
     }
   }, { passive: true });
 }
-
-
-
-
-
-
-
