@@ -419,7 +419,7 @@ function createListItem(item) {
             </div>
             <div class="list-item-actions">
                 ${editBtnHtml}
-                <button class="card-btn card-move" title="移動">📦</button>
+                <button class="card-btn card-move" title="移動">🚐</button>
                 <button class="card-btn card-delete" title="ゴミ箱へ">🗑️</button>
             </div>
         `;
@@ -646,7 +646,8 @@ function switchView(view) {
         if (btnMove) btnMove.style.display = 'inline-block';
         if (btnDelete) btnDelete.style.display = 'inline-block';
 
-        if (editorTitle) editorTitle.focus();
+        if (editorText) editorText.focus();
+        
     }
     updateBackButton();
 }
