@@ -337,7 +337,7 @@ function renderSections(items) {
     // 1段目: フォルダ領域
     const folderSection = document.createElement('div');
     folderSection.className = 'section-container';
-    folderSection.innerHTML = `<div class="section-title">📚 フォルダ</div>`;
+    folderSection.innerHTML = `<div class="section-title">💼 フォルダ</div>`;
     const folderRow = document.createElement('div');
     folderRow.className = 'list-row-container';
 
@@ -386,7 +386,7 @@ function createListItem(item) {
     const el = document.createElement('div');
     el.className = `list-item ${item.type}`;
 
-    const icon = item.type === 'folder' ? '📚' : '📜';
+    const icon = item.type === 'folder' ? '💼' : '📜';
     const charCount = item.type === 'note' ? `${item.text ? item.text.length : 0}文字` : '';
     const displayTitle = escapeHTML(item.title) || getDefaultTitle();
 
@@ -397,8 +397,8 @@ function createListItem(item) {
                 <div class="list-item-title">${displayTitle}</div>
             </div>
             <div class="list-item-actions">
-                <button class="card-btn card-restore" title="復元">↩️</button>
-                <button class="card-btn card-delete-perm" title="削除">×</button>
+                <button class="card-btn card-restore green push" title="復元">↩️</button>
+                <button class="card-btn card-delete-perm red push" title="削除">×</button>
             </div>
         `;
         el.querySelector('.card-restore').addEventListener('click', (e) => {
@@ -671,7 +671,7 @@ function addFolder(rawName) {
     store.add(folderData);
 
     transaction.oncomplete = () => {
-        showStatus('フォルダ作成！ 📚');
+        showStatus('フォルダ作成！ 💼');
         if (newModal) newModal.style.display = 'none';
         loadItems();
     };
@@ -842,7 +842,7 @@ function openMoveModalForItem(id, type, title) {
         folders.forEach(folder => {
             const div = document.createElement('div');
             div.className = 'move-item';
-            div.textContent = `📚 ${folder.title}`;
+            div.textContent = `💼 ${folder.title}`;
             div.style.padding = '8px';
             div.style.cursor = 'pointer';
             div.addEventListener('click', () => {
