@@ -6,6 +6,14 @@
     --accent-hover: #7dd3fc;
     --gray: #94a3b8;
     --border-color: #9000FF;
+      --neon-pink: #ff00ff;
+  --neon-green: #0c0;
+  --neon-yellow: #ffff00;
+  --neon-purple: #bc13fe;
+  --neon-blue: #00ffff;
+  --neon-red: #a00;
+  --neon-orange: #ff9e00;
+
 }
 
 *, *::before, *::after {
@@ -16,10 +24,10 @@ html {
     background-color: #000;
     margin: 0;
     padding: 0;
-    min-height: 100dvh;
+    height: 100%;
     width: 100%;
-    overflow-x: hidden;
     overscroll-behavior: none;
+    overflow: hidden;
 }
 
 body {
@@ -29,12 +37,13 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     position: relative;
-    display: block;
     overflow-x: hidden;
+    height:100%;
 }
 input, textarea {
     caret-color: #aaffaa;
 }
+
 
 
 /* 蛍のエフェクト */
@@ -78,25 +87,131 @@ input, textarea {
     }
 }
 
+
+.all-contents{
+    height:100dvh;
+    width:100%;
+    display: flex;
+    flex-direction: column;
+}
+
 /* 固定ヘッダー */
 header {
-    position: fixed;
-    top: 0;
-    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     z-index: 1000;
-
     padding: 10px 16px;
     background: transparent;
     white-space: nowrap;
-    overflow-x: auto;
-
+    overflow-x: hidden;
+    flex-shrink: 0;
+}
+.group-left{
+    display:flex;
+    align-items: center;
+    gap: 10px;
+}
+.group-center{
+    display:flex;
+    align-items: center;
+}
+.group-right{
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    gap: 10px;
 }
 
-header button {
-    display: inline-block;
-    vertical-align: middle;
+
+
+
+#editor-title-wrapper {
+    display: flex;
+    background: transparent;
+    border:1px solid #9000FF;
+    border-radius: 8px;
+    background: transparent;
+    margin: 10px;
+    padding:5px;
 }
+
+.editor-title {
+    flex: 1;
+    font-size: 1.2rem;
+    font-weight: 600;
+    outline: none;
+    border:none;
+    color: #aaffaaaa;
+    padding-right: 32px;
+    background: transparent;
+}
+#editor-title-wrapper:focus-within{
+    border:1px solid #aaffaa;
+    box-shadow: 0 0 10px #aaffaa;
+}
+.btn-title-clear {
+    display:flex;
+    position: absolute;
+    right: 20px;
+    background: #700;
+    border: none;
+    border-radius: 50%;
+    color: #ddd;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+}
+
+.btn-title-clear:active {
+    transform: scale(0.9) translateY(2px);
+}
+
+
+
+#editor-view {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    background: transparent;
+    z-index: 500;
+    padding: 10px;
+}
+
+.editor-body-wrapper {
+    display: flex;
+    flex-grow: 1; 
+    background: transparent;
+}
+
+#editor {
+    display:block;
+    height:100%;
+    width: 100%;
+    border:1px solid #9000FF;
+    font-size: 1.1rem;
+    resize: none;
+    outline: none;
+    background: transparent;
+    color: #ddd;
+    overflow-x: hidden;
+    overflow-y: auto; 
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
+}
+#editor:focus{
+    border: 1px #0ff;
+    box-shadow: 0 0 10px #0ff;
+}
+
+
+
+
+
 
 /* パンくずリスト */
 .breadcrumb {
@@ -122,35 +237,54 @@ header button {
     color: #009496;
 }
 
-/* ボタン装飾 */
+
 .push {
-    color: #ddd;
-    background: transparent;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 6px;
-    transition: transform 0.1s, background 0.2s;
-    will-change: transform, background;
+display: flex;
+  width: auto;
+  border: 2px solid;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+  position: relative;
+  background: transparent;
+  margin: 4px 0; 
 }
-
-.push:hover {
-    background: #77777777;
-}
-
 .push:active {
-    transform: scale(0.9) translateY(2px);
-    background: #aaaaaa77;
+    transform: scale(0.9) translateY(2px); 
 }
 
-.red { box-shadow: 0 0 30px #700000; border-color: #700000; }
-.blue { box-shadow: 0 0 30px #2B77aa; border-color: #2B77aa; }
-.green { box-shadow: 0 0 30px #00aa00; border-color: #00aa00; }
-.purple { box-shadow: 0 0 30px #9000ff; border-color: #9000ff; }
-.yellow { box-shadow: 0 0 30px #ffff00; border-color: #ffff00; }
-.pink { box-shadow: 0 0 30px #DD00ff; border-color: #DD00ff; }
+.pink {
+  color: var(--neon-pink);
+  box-shadow: 0 0 30px var(--neon-pink);
+}
+
+.green {
+  color: var(--neon-green);
+  box-shadow: 0 0 30px var(--neon-green);
+}
+
+.yellow {
+  color: var(--neon-yellow);
+  box-shadow: 0 0 30px var(--neon-yellow);
+}
+
+.purple {
+  color: var(--neon-purple);
+  box-shadow: 0 0 30px var(--neon-purple);
+}
+
+.blue {
+  color: var(--neon-blue);
+  box-shadow: 0 0 30px var(--neon-blue);
+}
+
+.red {
+  color: var(--neon-red);
+  box-shadow: 0 0 30px var(--neon-red);
+}
 
 .btn-back:disabled {
     cursor: not-allowed;
@@ -267,7 +401,7 @@ header button {
 
 .section-title {
     font-size: 0.9rem;
-    color: var(--gray);
+    color: #9000FF;
     margin-bottom: 8px;
     font-weight: bold;
 }
@@ -416,118 +550,14 @@ header button {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* エディタ画面 */
-#editor-view {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100dvh;
-    background: transparent;
-    z-index: 500;
-    display: none;
-    padding-top: 60px;
-}
-
-.editor-header {
-    display: block;
-    padding: 10px 16px;
-    background: transparent;
-}
 
 
-.editor-title-wrapper {
-    display: flex;
-    align-items: center;
-    position: relative;
-    background: transparent;
-}
 
-.editor-title {
-    flex: 1;
-    font-size: 1.2rem;
-    font-weight: 600;
-    outline: none;
-    background: transparent;
-    color: #aaffaaaa;
-    padding-right: 32px;
-    border-color:#9000FF;
-    border-radius: 8px;
-}
-.editor-title:focus-within{
-    box-shadow: 0 0 15px #9000FF;
-}
-.btn-title-clear {
-    position: absolute;
-    right: 0;
-    background: transparent;
-    border: 1px dashed #700;
-    background: #700;
-    border-radius: 50%;
-    color: #ddd;
-    font-size: 1.4rem;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 0 8px;
-    line-height: 1;
-}
 
-.btn-title-clear:hover {
-    color: #ef4444;
-}
 
-.editor-body-wrapper {
-    display: flex;
-    height: calc(100dvh - 120px);
-    
-}
-
-/* textarea 挙動・揺れ調整 (⑤ & ⑥) */
-#editor {
-    flex: 1;
-    height: 100%;
-    border: 0.7px dashed #0ff;
-    box-shadow: 0 0 10px #0ff;
-    padding: 16px;
-    font-size: 1.1rem;
-    line-height: 1.6;
-    resize: none;
-    outline: none;
-    background: transparent;
-    color: #ddd;
-    overflow-x: hidden;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
-
-}
-
-/* エディタ右側操作ボタン群 (④) */
-.editor-side-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px 8px;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    background: #00ffff22;
-}
-
-.editor-side-tools button {
-    margin-right: 0;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 /* 通知メッセージ */
 #message {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.85);
     color: white;
     padding: 8px 16px;
@@ -538,6 +568,7 @@ header button {
     pointer-events: none;
     z-index: 2000;
     border: 1px solid var(--accent-color);
+    margin: 0 8px; /* ボタンとの間の余白 */
 }
 
   .stars{
