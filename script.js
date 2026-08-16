@@ -41,7 +41,7 @@ const STORE_NAME = 'items';
 
 let db;
 let currentFolderId = 'root';
-let pathStack = [{ id: 'root', title: 'Home' }];
+let pathStack = [{ id: 'root', title: '🏠️' }];
 let currentNoteId = null;
 let itemToMoveId = null;
 let saveTimer = null;
@@ -69,12 +69,15 @@ const btnCopy = document.getElementById('btn-copy');
 const btnClear = document.getElementById('btn-clear');
 const btnClearHeader = document.getElementById('btn-clear-header');
 const btnTitleClear = document.getElementById('btn-title-clear');
+const editBtns = document.getElementById('edit-btns');
+
 
 const searchInput = document.getElementById('search-input');
 const btnSearchClear = document.getElementById('btn-search-clear');
 const sortSelect = document.getElementById('sort-select');
 
 const editorView = document.getElementById('editor-view');
+const editorTitleWrap = document.getElementById('editor-title-wrapper');
 const editorTitle = document.getElementById('editor-title');
 const editorText = document.getElementById('editor');
 const messageBox = document.getElementById('message');
@@ -469,7 +472,7 @@ function openTrash() {
 }
 
 function goBack() {
-    if (editorView && editorView.style.display === 'block') {
+    if (editorView && editorView.style.display === 'flex') {
         switchView('gallery');
         return;
     }
@@ -482,7 +485,7 @@ function goBack() {
 
 function updateBackButton() {
     if (btnBack) {
-        btnBack.disabled = pathStack.length <= 1 && editorView.style.display !== 'block';
+        btnBack.disabled = pathStack.length <= 1 && editorView.style.display !== 'flex';
     }
 }
 
@@ -515,15 +518,17 @@ function undoEditor() {
         editorText.value = previousState;
 
         triggerAutoSave();
-        showStatus('元に戻しました ↩️');
+        
     } else {
-        showStatus('これ以上戻せません');
+        showStatus('これ以上戻せません🐱');
     }
 }
 
 function copyAllText() {
     navigator.clipboard.writeText(editorText.value).then(() => {
-        showStatus('コピーしました！📋');
+    })
+    .catch((err) => {
+            console.error('コピーに失敗しました', err);
     });
 }
 
@@ -533,7 +538,7 @@ function clearEditorText() {
     editorText.value = '';
     recordUndoState();
     triggerAutoSave();
-    showStatus('クリアしました 🧹');
+    ;
 }
 
 function openEditor(id) {
@@ -625,6 +630,9 @@ function switchView(view) {
 
     if (view === 'gallery') {
         if (editorView) editorView.style.display = 'none';
+        if(editorTitleWrap) editorTitleWrap.style.display = 'none';
+        if(editorTitle) editorTitle.style.display = 'none';
+        if (editBtns) editBtns.style.display = 'none';
         if (mainView) mainView.style.display = 'block';
         if (searchContainer) searchContainer.style.display = 'block';
         if (breadcrumbEl) breadcrumbEl.style.display = 'block';
@@ -636,7 +644,10 @@ function switchView(view) {
 
         loadItems();
     } else {
-        if (editorView) editorView.style.display = 'block';
+        if (editorView) editorView.style.display = 'flex';
+        if (editorTitleWrap) editorTitleWrap.style.display = 'flex';
+        if(editorTitle) editorTitle.style.display = 'flex';
+        if (editBtns) editBtns.style.display = 'flex';
         if (mainView) mainView.style.display = 'none';
         if (searchContainer) searchContainer.style.display = 'none';
         if (breadcrumbEl) breadcrumbEl.style.display = 'none';
@@ -718,7 +729,7 @@ function moveToTrash(id) {
 
     transaction.oncomplete = () => {
         showStatus('ゴミ箱へ移動しました 🗑️');
-        if (editorView && editorView.style.display === 'block') {
+        if (editorView && editorView.style.display === 'flex') {
             switchView('gallery');
         } else {
             loadItems();
@@ -746,7 +757,7 @@ function restoreItem(id) {
 }
 
 function deletePermanently(id) {
-    if (!confirm('完全に削除しますか？（フォルダ内のメモも全て削除されます）')) return;
+    if (!confirm('元に戻せないけど本当に削除していいですか...？フォルダ内のアイテムも一緒に消えます🐱')) return;
 
     const transaction = db.transaction([STORE_NAME], 'readwrite');
     const store = transaction.objectStore(STORE_NAME);
@@ -777,11 +788,11 @@ function emptyTrash() {
         const trashItems = allItems.filter(item => checkIsTrash(item));
 
         if (trashItems.length === 0) {
-            showStatus('すでに空だよ 🗑️');
+            showStatus('すでに空だよ ️🐱');
             return;
         }
 
-        if (confirm(`元に戻せないけど本当に削除していいですか...？フォルダの中のアイテムも一緒に消えます🐱`)) {
+        if (confirm(`元に戻せないけど本当に削除していいですか...？フォルダ内のアイテムも一緒に消えます🐱`)) {
             let allDeleteIds = new Set();
             trashItems.forEach(item => {
                 allDeleteIds.add(item.id);
