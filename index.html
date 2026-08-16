@@ -23,79 +23,85 @@
 
 <div class="stars"></div>
 
-
-<header>
-    <button class="btn-back pink push" disabled id="btn-back">←</button>
-    <button class="green push" id="btn-new">+</button>
-    <button class="blue push" id="btn-move" style="display:none;">🚐</button>
-    <button class="red push" id="btn-delete" style="display:none;">🗑️</button>
-</header>
-
-<!-- パンくずリスト -->
-<div id="breadcrumb" class="breadcrumb"></div>
-
-<!-- 検索バー ＆ 並び替えコントロール -->
-<div class="search-container">
-    <div class="search-wrapper">
-        <input type="text" id="search-input" class="search-input" placeholder="🔍 検索...">
-        <button id="btn-search-clear" class="search-clear-btn" style="display: none;">×</button>
-    </div>
-    <div class="sort-wrapper">
-        <label for="sort-select">Sort:</label>
-        <select id="sort-select" class="sort-select">
-            <option value="updated-desc">更新が新しい順</option>
-            <option value="updated-asc">更新が古い順</option>
-            <option value="title-asc">タイトル順 (A-Z)</option>
-            <option value="title-desc">タイトル順 (Z-A)</option>
-        </select>
-    </div>
-</div>
-
-<!-- メイン表示領域（1段目：フォルダ / 2段目：メモ） -->
-<div id="main-view"></div>
-
-<!-- エディタ画面 -->
-<div id="editor-view">
-    <div class="editor-header">
-        <div class="editor-title-wrapper">
-            <input type="text" id="editor-title" class="editor-title" >
-            <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
+<div class="all-contents">
+    <header>
+        <div class="group-left">
+            <button class="btn-back pink push" disabled id="btn-back">←</button>
+            <button class="green push" id="btn-new">+</button>
+            <button class="blue push" id="btn-move" style="display:none;">🚐</button>
+            <button class="red push" id="btn-delete" style="display:none;">🗑️</button>
+        </div>
+        
+        <div id="message" class="group-center"></div>
+        
+        <div id="edit-btns" class="group-right">
+                <button class=" green push" id="btn-copy" title="全コピー">📋<br>Copy</button>
+                <button class="push yellow" id="btn-clear" title="クリア">🧹Clear</button>
+                <button class="push purple" id="btn-undo" title="元に戻す">↩️Undo</button>
+        </div>
+    </header>
+    
+    <!-- パンくずリスト -->
+    <div id="breadcrumb" class="breadcrumb"></div>
+    
+    <!-- 検索バー ＆ 並び替えコントロール -->
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text" id="search-input" class="search-input" placeholder="🔍 検索...">
+            <button id="btn-search-clear" class="search-clear-btn" style="display: none;">×</button>
+        </div>
+        <div class="sort-wrapper">
+            <label for="sort-select">Sort:</label>
+            <select id="sort-select" class="sort-select">
+                <option value="updated-desc">更新が新しい順</option>
+                <option value="updated-asc">更新が古い順</option>
+                <option value="title-asc">タイトル順 (A-Z)</option>
+                <option value="title-desc">タイトル順 (Z-A)</option>
+            </select>
         </div>
     </div>
-    <div class="editor-body-wrapper">
-        <textarea id="editor" ></textarea>
-        <!-- 右側の操作ボタン群 -->
-        <div class="editor-side-tools">
-            <button class=" green push" id="btn-copy" title="全コピー">📋</button>
-            <button class="push yellow" id="btn-clear" title="クリア">🧹</button>
-            <button class="push purple" id="btn-undo" title="元に戻す">↩️</button>
+    
+    <!-- メイン表示領域（1段目：フォルダ / 2段目：メモ） -->
+    <div id="main-view"></div>
+    
+    
+    <div id="editor-title-wrapper">
+        <input type="text" id="editor-title" class="editor-title" >
+        <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
+    </div>
+    
+    <div id="editor-view">
+        <div class="editor-body-wrapper">
+            <textarea id="editor" ></textarea>
         </div>
     </div>
-</div>
-
-<!-- 移動モーダル -->
-<div id="move-modal">
-    <div class="modal-content">
-        <div class="modal-title" id="move-modal-title">移動先を選択</div>
-        <div id="move-list"></div>
-        <button id="btn-move-cancel" class="move-folder-cancel red push">Cancel</button>
-    </div>
-</div>
-
-<!-- 新規作成モーダル -->
-<div id="new-modal">
-    <div class="new-modal-content">
-        <div class="new-modal-title">Add what？🐱</div>
-        <div class="new-btn-group">
-            <button id="btn-new-folder" class="purple push">💼</button>
-            <button id="btn-new-note" class="blue push">📜</button>
-            <button id="btn-new-cancel" class="red push">Cancel</button>
+    
+    
+    
+    
+    <!-- 移動モーダル -->
+    <div id="move-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="move-modal-title">移動先を選択</div>
+            <div id="move-list"></div>
+            <button id="btn-move-cancel" class="move-folder-cancel red push">Cancel</button>
         </div>
     </div>
+    
+    <!-- 新規作成モーダル -->
+    <div id="new-modal">
+        <div class="new-modal-content">
+            <div class="new-modal-title">Add what？🐱</div>
+            <div class="new-btn-group">
+                <button id="btn-new-folder" class="purple push">💼</button>
+                <button id="btn-new-note" class="blue push">📜</button>
+                <button id="btn-new-cancel" class="red push">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    
 </div>
-
-<div id="message"></div>
-
 <script src="script.js"></script>
 </body>
 </html>
