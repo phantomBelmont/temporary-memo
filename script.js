@@ -58,6 +58,7 @@ function checkIsTrash(item) {
 // ==========================================
 // 2. DOM要素の取得
 // ==========================================
+const visitorScreen = document.getElementById('visitor-screen');
 const mainView = document.getElementById('main-view');
 const breadcrumbEl = document.getElementById('breadcrumb');
 const btnBack = document.getElementById('btn-back');
@@ -76,6 +77,7 @@ const searchInput = document.getElementById('search-input');
 const btnSearchClear = document.getElementById('btn-search-clear');
 const sortSelect = document.getElementById('sort-select');
 
+const memoScreen = document.getElementById('memo-screen');
 const editorView = document.getElementById('editor-view');
 const editorTitleWrap = document.getElementById('editor-title-wrapper');
 const editorTitle = document.getElementById('editor-title');
@@ -400,7 +402,7 @@ function createListItem(item) {
                 <div class="list-item-title">${displayTitle}</div>
             </div>
             <div class="list-item-actions">
-                <button class="card-btn card-restore green push" title="復元">↩️</button>
+                <button class="card-btn card-restore  green push" title="復元">↩️</button>
                 <button class="card-btn card-delete-perm red push" title="削除">×</button>
             </div>
         `;
@@ -618,7 +620,7 @@ function saveNoteRealtime() {
         itemData.isTrash = false;
 
         store.put(itemData);
-        showStatus('自動保存完了 ✨');
+        showStatus('保存完了');
     };
 }
 
@@ -629,10 +631,12 @@ function switchView(view) {
     const searchContainer = document.querySelector('.search-container');
 
     if (view === 'gallery') {
+        if (memoScreen) memoScreen.style.display = 'none';
         if (editorView) editorView.style.display = 'none';
         if(editorTitleWrap) editorTitleWrap.style.display = 'none';
         if(editorTitle) editorTitle.style.display = 'none';
         if (editBtns) editBtns.style.display = 'none';
+        if (visitorScreen) visitorScreen.style.display = 'flex';
         if (mainView) mainView.style.display = 'block';
         if (searchContainer) searchContainer.style.display = 'block';
         if (breadcrumbEl) breadcrumbEl.style.display = 'block';
@@ -644,10 +648,12 @@ function switchView(view) {
 
         loadItems();
     } else {
+        if (memoScreen) memoScreen.style.display = 'flex';
         if (editorView) editorView.style.display = 'flex';
         if (editorTitleWrap) editorTitleWrap.style.display = 'flex';
         if(editorTitle) editorTitle.style.display = 'flex';
         if (editBtns) editBtns.style.display = 'flex';
+        if (visitorScreen) visitorScreen.style.display = 'none';
         if (mainView) mainView.style.display = 'none';
         if (searchContainer) searchContainer.style.display = 'none';
         if (breadcrumbEl) breadcrumbEl.style.display = 'none';
