@@ -6,11 +6,11 @@
     --accent-hover: #7dd3fc;
     --gray: #94a3b8;
     --border-color: #9000FF;
-      --neon-pink: #ff00ff;
-  --neon-green: #0c0;
-  --neon-yellow: #ffff00;
+      --neon-pink: #aa00aa;
+  --neon-green: #0a0;
+  --neon-yellow: #aaaa00;
   --neon-purple: #bc13fe;
-  --neon-blue: #00ffff;
+  --neon-blue: #00aaaa;
   --neon-red: #a00;
   --neon-orange: #ff9e00;
 
@@ -94,12 +94,7 @@ input, textarea {
     display: flex;
     flex-direction: column;
 }
-#visitor-screen{
-    height:100%;
-    width:100%;
-    display:flex;
-    flex-direction:column;
-}
+
 
 #memo-screen{
     position: relative;
@@ -112,33 +107,30 @@ input, textarea {
 }
 
 /* 固定ヘッダー */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    z-index: 1000;
-    padding: 10px 16px;
-    background: transparent;
-    white-space: nowrap;
-    overflow-x: hidden;
-    flex-shrink: 0;
+.memo-header {
+  display: flex;
+  background-color: #000; 
+  width: 100%;
+}
+
+.group-center {
+  display: block;
+  max-width: 55%;
+white-space: normal;      /* 折り返しを許可 */
+  word-break: break-word;   /* 単語の途中でも自然に改行 */
+  overflow-wrap: anywhere;  /* 長い英数字や記号でも確実に折り返す */
+
 }
 .group-left{
-    display:flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
 }
-.group-center{
-    display:flex;
-    align-items: center;
-}
-.group-right{
-    display:flex;
-    flex-direction:column;
-    align-items: center;
-    gap: 10px;
+
+.group-right {
+  display: flex;       
+  flex-direction: column;
+  margin-left:auto;
 }
 
 
@@ -146,42 +138,79 @@ header {
 
 #editor-title-wrapper {
     display: flex;
+    position:relative;
     background: transparent;
-    border:1px solid #9000FF;
+    border:transparent;
     border-radius: 8px;
-    background: transparent;
-    margin: 10px;
+    margin: 7px;
     padding:5px;
+    width: 100%; /* 親である .group-center に合わせる */
+    flex-grow: 1;
+}
+#editor-title-wrapper:focus
+,#editor-title-wrapper:focus-within{
+     border:1px solid #aaffaa;
+     box-shadow:0 0 10px #aaffaa;
 }
 
-.editor-title {
+#editor-title-wrapper  textarea {
+    height:auto;
+    min-height: 40px;
+    max-height: 100px;
+    overflow-y: auto;
+    position:relative;
     font-size: 1.2rem;
     font-weight: 600;
-    outline: none;
+    font-family: inherit;
     border:none;
-    color: #aaffaaaa;
+    color: #9000dd;
     padding-right: 32px;
     background: transparent;
+    white-space: pre-wrap; 
+  word-break: break-word;   /* 単語の途中でも自然に改行 */
+  overflow-wrap: anywhere;  /* 長い英数字や記号でも確実に折り返す */
+  min-width: 0; /* 重要：親より小さく縮める */
+  outline:none;
+  resize:none;
 }
-#editor-title-wrapper:focus-within{
-    border:1px solid #aaffaa;
-    box-shadow: 0 0 10px #aaffaa;
-}
+
 .btn-title-clear {
     display:flex;
-    margin-left: auto;
+    position: absolute;
+    right: 10px;
     background: #700;
     border: none;
     border-radius: 50%;
     color: #ddd;
     font-size: 1.4rem;
     cursor: pointer;
-    padding: 0 8px;
     line-height: 1;
+    z-index:50;
 }
 
 .btn-title-clear:active {
     transform: scale(0.9) translateY(2px);
+}
+.char-count{
+    margin-top:20px;
+    text-align: center;
+    color: #0090DD;
+}
+/* 通知メッセージ */
+#message {
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 2000;
+    border: 1px solid var(--accent-color);
+    margin: 5px 8px; /* ボタンとの間の余白 */
+    text-align: center;
+    width:auto;
 }
 
 
@@ -201,6 +230,7 @@ header {
     display: flex;
     flex-grow: 1; 
     background: transparent;
+
 }
 
 #editor {
@@ -215,7 +245,6 @@ header {
     color: #ddd;
     overflow-x: hidden;
     overflow-y: auto; 
-    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
 }
 #editor:focus{
@@ -226,31 +255,27 @@ header {
 
 
 
-
-
-/* パンくずリスト */
-.breadcrumb {
-    display: block;
-    padding: 10px 20px 0 20px;
-    font-size: 1.2rem;
-    color: #DD00FFcc;
+#visitor-screen{
+    height:100dvh;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+}
+.visitor-header{
+    position:fixed;
+    top:0;
+    left:0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    z-index: 3000;
+    padding: 10px 16px;
+    background: #000;
+    overflow-x: hidden;
+    flex-shrink: 0;
 }
 
-.breadcrumb-item {
-    display: inline-block;
-    cursor: pointer;
-}
-
-.breadcrumb-item:hover {
-    text-decoration: underline;
-    color:#0ff;
-}
-
-.breadcrumb-separator {
-    display: inline-block;
-    margin: 0 6px;
-    color: #009496;
-}
 
 
 .push {
@@ -307,6 +332,12 @@ header {
     visibility: hidden;
 }
 
+
+
+
+
+
+
 /* 検索バー ＆ ソートセレクター */
 .search-container {
     display: block;
@@ -331,7 +362,7 @@ header {
     padding: 8px 36px 8px 12px;
     border-radius: 8px;
     border: 1px solid #aaffaa;
-    box-shadow: 0 0 10px #aaffaa;
+    box-shadow: 0 0 5px #aaffaa;
     background: transparent;
     color: #aaffaa;
     outline: none;
@@ -375,42 +406,52 @@ header {
     cursor: pointer;
 }
 
-/* ゴミ箱バナーエリア */
-.trash-banner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: transparent;
-    border: 1px dashed #ef4444;
-    box-shadow: 0 0 20px #700;
-    padding: 10px 16px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    color: #900;
-    font-weight: 600;
-    font-size: 0.9rem;
+
+
+
+
+/* パンくずリスト */
+.breadcrumb {
+    display: block;
+    position:fixed;
+    padding: 10px 20px 0 20px;
+    font-size: 1.2rem;
+    color: #DD00FFcc;
+    margin-top:100px;
+    background: #333;
+    z-index: 500;
 }
 
-.btn-empty-trash-banner {
-    color: #ddd;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
+.breadcrumb-item {
+    display: inline-block;
     cursor: pointer;
-    background: transparent;
-    box-shadow: 0 0 30px #700;
 }
+
+.breadcrumb-item:hover {
+    text-decoration: underline;
+    color:#0ff;
+}
+
+.breadcrumb-separator {
+    display: inline-block;
+    margin: 0 6px;
+    color: #009496;
+}
+
+
+
 
 /* メイン表示エリア (2段構成) */
 #main-view {
     display: block;
+    height: 100%;
+    width:100%;
     padding: 10px 16px;
     position: relative;
     z-index: 1;
+    margin-top: 150px;
+    
 }
-
 .section-container {
     margin-bottom: 16px;
 }
@@ -420,14 +461,6 @@ header {
     color: #9000FF;
     margin-bottom: 8px;
     font-weight: bold;
-}
-
-/* 横長リスト表示 (横スクロール可能・左が新しい) */
-.list-row-container {
-    display: block;
-    gap: 8px;
-    padding-bottom: 8px;
-    scroll-behavior: smooth;
 }
 
 .list-item {
@@ -512,6 +545,43 @@ header {
     margin-top: 40px;
 }
 
+
+
+
+
+
+
+/* ゴミ箱バナーエリア */
+.trash-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border: 1px dashed #ef4444;
+    box-shadow: 0 0 20px #700;
+    padding: 10px 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    color: #900;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.btn-empty-trash-banner {
+    color: #ddd;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    box-shadow: 0 0 30px #700;
+}
+
+
+
+
 /* モーダル */
 #move-modal, #new-modal {
     position: fixed;
@@ -577,27 +647,13 @@ header {
 
 
 
-/* 通知メッセージ */
-#message {
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 2000;
-    border: 1px solid var(--accent-color);
-    margin: 0 8px; /* ボタンとの間の余白 */
-}
 
   .stars{
             position: fixed;
             height: 100%;
             width: 100%;
             top:0; left:0;
-            z-index: -1;
+            z-index: 2000;
            pointer-events:none;
 
             background-size: 200px 200px;
