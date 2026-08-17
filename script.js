@@ -392,7 +392,14 @@ function createListItem(item) {
     el.className = `list-item ${item.type}`;
 
     const icon = item.type === 'folder' ? '💼' : '📜';
-    const charCount = item.type === 'note' ? `${item.text ? item.text.length : 0}文字` : '';
+    const charCount = item.type === 'note' ? (()=>{
+        const text = item.text || '';
+        const count = [...text].length; // 文字単位でカウント
+        return `${count}文字`;
+    })() : '';
+    
+
+
     const displayTitle = escapeHTML(item.title) || getDefaultTitle();
 
     if (currentFolderId === 'trash') {
@@ -518,7 +525,7 @@ function undoEditor() {
 
         const previousState = undoStack[undoStack.length - 1];
         editorText.value = previousState;
-
+        updateCharCount();
         triggerAutoSave();
         
     } else {
@@ -538,9 +545,29 @@ function clearEditorText() {
     if (editorText.value.length === 0) return;
     recordUndoState();
     editorText.value = '';
+    updateCharCount();
     recordUndoState();
     triggerAutoSave();
     ;
+}
+// ==========================================
+// 文字数カウント用グローバル関数
+// ==========================================
+// 1. 文字数表示用要素を取得（グローバルスコープで）
+const charCountDisplay = document.getElementById('char-count-display');
+
+// 2. 文字数更新関数（グローバルスコープで定義！）
+
+
+function updateCharCount() {
+    // ✅ 安全チェック：要素が存在するか確認
+    if (!editorText || !charCountDisplay) {
+        console.warn('updateCharCount: editorText or charCountDisplay is null');
+        return;
+    }
+    const text = editorText.value;
+    const count = [...text].length;
+    charCountDisplay.textContent = `${count}文字`;
 }
 
 function openEditor(id) {
@@ -554,7 +581,22 @@ function openEditor(id) {
         const item = request.result;
         if (item) {
             editorTitle.value = item.title || '';
+            
+            // ✅ ここに追加！ 描画後に高さを計算する
+            // setTimeout(0) で「次の描画フレーム」の後に実行されます
+            setTimeout(() => {
+            // ✅ ここが重要！ 値をセットした直後に高さをリセット＆再計算
+            editorTitle.style.height = 'auto'; // 一度リセット
+            const newHeight = editorTitle.scrollHeight;
+            const minHeight = 40;
+            const finalHeight = Math.max(newHeight, minHeight);
+            
+            editorTitle.style.height = newHeight + 'px';
+            }, 0); // 0ms 待機（実際には次のフレームで実行）
             editorText.value = item.text || '';
+            
+        updateCharCount();
+            
             resetUndoHistory(editorText.value);
         }
         switchView('editor');
@@ -565,6 +607,7 @@ function addNote() {
     currentNoteId = null;
     editorTitle.value = '';
     editorText.value = '';
+    updateCharCount();
     resetUndoHistory('');
 
     const defaultTitle = getDefaultTitle();
@@ -620,7 +663,7 @@ function saveNoteRealtime() {
         itemData.isTrash = false;
 
         store.put(itemData);
-        showStatus('保存完了');
+        showStatus('保存完了🐱');
     };
 }
 
@@ -983,18 +1026,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    if (editorTitle) editorTitle.addEventListener('input', triggerAutoSave);
-
-    if (editorText) {
-        editorText.addEventListener('input', triggerAutoSave);
-        editorText.addEventListener('paste', () => recordUndoState());
-        editorText.addEventListener('cut', () => recordUndoState());
+    
+    if (editorTitle) {
+    editorTitle.addEventListener('input', triggerAutoSave);
+        
+        editorTitle.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
     }
+    if (editorText) {
+    editorText.addEventListener('input', triggerAutoSave);
+    editorText.addEventListener('input', updateCharCount); // ✅ 文字数カウント
+    
+    // 初期値セット
+    updateCharCount();
+    
+    editorText.addEventListener('paste', () => {
+            setTimeout(updateCharCount, 0);
+            recordUndoState();
+        });
+        editorText.addEventListener('cut', () => {
+            setTimeout(updateCharCount, 0);
+            recordUndoState();
+        });
+    }
+
 
     if (searchInput) {
         searchInput.addEventListener('input', () => loadItems());
     }
+    
+    
     if (btnSearchClear) {
         btnSearchClear.addEventListener('click', () => {
             if (searchInput) searchInput.value = '';
@@ -1006,6 +1069,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+    
 function setupTouchEvents() {
   const mainView = document.getElementById('main-view');
   if (!mainView) return;
