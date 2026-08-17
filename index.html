@@ -25,14 +25,25 @@
 
 <div class="all-contents">
     <div id="memo-screen">
-        <header>
+        <header class="memo-header">
             <div class="group-left">
-                <button class="btn-back pink push" disabled id="btn-back">←</button>
-                <button class="blue push" id="btn-move" style="display:none;">🚐</button>
-                <button class="red push" id="btn-delete" style="display:none;">🗑️</button>
+                <button class="btn-back pink push" disabled id="btn-back">←<br>Back</button>
+                <button class="blue push" id="btn-move" style="display:none;">🚐<br>Move</button>
+                <button class="red push" id="btn-delete" style="display:none;">🗑️<br>trash</button>
             </div>
             
-            <div id="message" class="group-center"></div>
+            <!--中央グループ-->
+            <div class="group-center">
+                  <label for="editor-title">Title:</label>
+                <div id="editor-title-wrapper" tabindex="0" >
+
+                    <textarea id="editor-title" class="editor-title" rows="1"></textarea>
+                    <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
+                </div>
+                <div id="message"></div>
+                <div id="char-count-display" class="char-count">0文字</div>
+            </div>
+            
             
             <div id="edit-btns" class="group-right">
                     <button class=" green push" id="btn-copy" title="全コピー">📋<br>Copy</button>
@@ -40,10 +51,7 @@
                     <button class="push purple" id="btn-undo" title="元に戻す">↩️<br>Undo</button>
             </div>
         </header>
-        <div id="editor-title-wrapper">
-            <input type="text" id="editor-title" class="editor-title" >
-            <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
-        </div>
+
         <div id="editor-view">
             <div class="editor-body-wrapper">
                 <textarea id="editor" ></textarea>
@@ -54,11 +62,8 @@
     
     
     <div id="visitor-screen">
-        <header>
+        <header class="visitor-header">
             <button class="green push" id="btn-new">+</button>
-        </header>
-            <!-- パンくずリスト -->
-            <div id="breadcrumb" class="breadcrumb"></div>
             
             <!-- 検索バー ＆ 並び替えコントロール -->
             <div class="search-container">
@@ -66,6 +71,7 @@
                     <input type="text" id="search-input" class="search-input" placeholder="🔍">
                     <button id="btn-search-clear" class="search-clear-btn" style="display: none;">×</button>
                 </div>
+                
                 <div class="sort-wrapper">
                     <label for="sort-select">Sort:</label>
                     <select id="sort-select" class="sort-select">
@@ -74,12 +80,15 @@
                         <option value="title-asc">タイトル順 (A-Z)</option>
                         <option value="title-desc">タイトル順 (Z-A)</option>
                     </select>
-                </div>
+                </div><!--sort-wrapper終了-->
             </div>
-            
+        
+        </header>
+                <!-- パンくずリスト -->
+                <div id="breadcrumb" class="breadcrumb"></div>
             <!-- メイン表示領域（1段目：フォルダ / 2段目：メモ） -->
             <div id="main-view"></div>
-    </div>
+    </div><!--visitor-screen終了-->
 
 
 
