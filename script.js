@@ -350,7 +350,7 @@ function renderSections(items) {
     const searchQuery = searchInput ? searchInput.value.trim() : '';
     if (currentFolderId === 'root' && searchQuery === '') {
         const trashItem = document.createElement('div');
-        trashItem.className = 'list-item trash-folder';
+        trashItem.className = 'list-item red';
         trashItem.innerHTML = `
             <div class="list-item-icon">🗑️</div>
             <div class="list-item-info">
@@ -377,7 +377,7 @@ function renderSections(items) {
     mainView.appendChild(noteSection);
 
     if (items.length === 0) {
-    let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'このフォルダは空です<br>+ で作れるよ 🪄';
+    let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'このフォルダは空です<br>左上Addで作れるよ 🪄';
     mainView.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
 } else {
     // 中身がある場合は「フォルダ」「メモ」の各セクションを追加
@@ -431,7 +431,7 @@ function createListItem(item) {
             </div>
             <div class="list-item-actions">
                 ${editBtnHtml}
-                <button class="card-btn card-move" title="移動">🚐</button>
+                <button class="card-btn card-move " title="移動">🚐</button>
                 <button class="card-btn card-delete" title="ゴミ箱へ">🗑️</button>
             </div>
         `;
@@ -529,7 +529,7 @@ function undoEditor() {
         triggerAutoSave();
         
     } else {
-        showStatus('これ以上戻せません🐱');
+        showStatus('これ以上戻せないよ🦄');
     }
 }
 
@@ -663,7 +663,7 @@ function saveNoteRealtime() {
         itemData.isTrash = false;
 
         store.put(itemData);
-        showStatus('保存完了🐱');
+        showStatus('保存完了🌙');
     };
 }
 
@@ -738,7 +738,7 @@ function addFolder(rawName) {
 }
 
 function renameFolder(folderId, currentTitle) {
-    let newName = prompt("フォルダ名を入力しよう！🐱:", currentTitle);
+    let newName = prompt("フォルダ名を入力しよう！🌹:", currentTitle);
 
     if (newName !== null) {
         const finalName = newName.trim() === "" ? getDefaultTitle() : newName.trim();
@@ -806,7 +806,7 @@ function restoreItem(id) {
 }
 
 function deletePermanently(id) {
-    if (!confirm('元に戻せないけど本当に削除していいですか...？フォルダ内のアイテムも一緒に消えます🐱')) return;
+    if (!confirm('元に戻せないけど本当に削除していいですか...？💼は中に💼📜があれば一緒に消えます🕯️')) return;
 
     const transaction = db.transaction([STORE_NAME], 'readwrite');
     const store = transaction.objectStore(STORE_NAME);
@@ -841,7 +841,7 @@ function emptyTrash() {
             return;
         }
 
-        if (confirm(`元に戻せないけど本当に削除していいですか...？フォルダ内のアイテムも一緒に消えます🐱`)) {
+        if (confirm(`元に戻せないけど本当に削除していいですか...？💼は中に💼📜があれば一緒に消えます🕯️`)) {
             let allDeleteIds = new Set();
             trashItems.forEach(item => {
                 allDeleteIds.add(item.id);
@@ -957,7 +957,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnNewFolder) {
         btnNewFolder.addEventListener('click', () => {
-            const name = prompt("フォルダ名を入力しよう!🐱");
+            const name = prompt("フォルダ名を入力しよう!🌹");
             if (name !== null) {
                 addFolder(name);
             }
