@@ -140,7 +140,7 @@ input, textarea {
     position:relative;
     background: transparent;
     border:transparent;
-    border-radius: 8px;
+    border-radius: 3px;
     margin: 7px;
     padding:5px;
     width: 100%; /* 親である .group-center に合わせる */
@@ -240,15 +240,16 @@ input, textarea {
     font-size: 18px;
     resize: none;
     outline: none;
+    border-radius: 3px;
     background: transparent;
     color: #ddd;
     overflow-x: hidden;
     overflow-y: auto; 
+    scroll-behavior: auto;
     -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
 }
 #editor:focus{
-    border: 1px #0ff;
-    box-shadow: 0 0 10px #0ff;
+    border: 2px solid #0ff;
 }
 
 
@@ -282,7 +283,7 @@ input, textarea {
   width: auto;
   border:2px solid #333;
   box-shadow: 0 0 10px #555;
-  border-radius: 8px;
+  border-radius: 3px;
   cursor: pointer;
   font-family: inherit;
   font-weight: 1000;
@@ -345,7 +346,7 @@ input, textarea {
     position: relative;
     width: 100%;
     margin-bottom: 8px;
-    border-radius: 8px;
+    
     transition: all 0.2s ease;
 }
 
@@ -357,7 +358,7 @@ input, textarea {
     display: block;
     width: 100%;
     padding: 8px 36px 8px 12px;
-    border-radius: 8px;
+    border-radius: 3px;
     border: 1px solid #aaffaa;
     box-shadow: 0 0 5px #aaffaa;
     background: transparent;
@@ -395,7 +396,7 @@ input, textarea {
     color: #ddd;
     border-color: #ffff00;
     box-shadow: 0 0 10px #dd0;
-    border-radius: 6px;
+    border-radius: 3px;
     padding: 4px 8px;
     font-size: 0.8rem;
     margin-left: 6px;
@@ -466,7 +467,7 @@ input, textarea {
     justify-content: space-between; 
     background: transparent;
     border: 1px solid #333;
-    border-radius: 10px;
+    border-radius: 3px;
     padding: 10px 12px;
     cursor: pointer;
     position: relative;
@@ -550,14 +551,14 @@ input, textarea {
     background: transparent;
     text-align: center;
     padding: 10px 16px;
-    border-radius: 8px;
+    border-radius: 3px;
     margin-bottom: 12px;
     font-size: 0.9rem;
 }
 
 .btn-empty-trash-banner {
     padding: 6px 14px;
-    border-radius: 12px;
+    border-radius: 3px;
     font-size: 1rem;
     cursor: pointer;
     background: transparent;
@@ -588,7 +589,7 @@ input, textarea {
     padding:10px 0;
     transform: translate(-50%, -50%);
     background: #000;
-    border-radius: 12px;
+    border-radius: 3px;
     padding: 20px;
     width: 85%;
     max-width: 360px;
