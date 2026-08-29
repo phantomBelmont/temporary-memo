@@ -153,7 +153,35 @@ function sanitizeDatabase() {
     });
 }
 
+function createFireflies() {
+    const count = 15;
+    for (let i = 0; i < count; i++) {
+        const firefly = document.createElement('div');
+        firefly.className = 'firefly';
 
+        const randomizeFirefly = (el) => {
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 100;
+            const moveX = (Math.random() - 0.5) * 300;
+            const moveY = (Math.random() - 0.5) * 300;
+
+            el.style.left = `${startX}vw`;
+            el.style.top = `${startY}vh`;
+            el.style.setProperty('--tx', `${moveX}px`);
+            el.style.setProperty('--ty', `${moveY}px`);
+        };
+
+        randomizeFirefly(firefly);
+        firefly.style.animationDelay = `${Math.random() * 8}s`;
+        firefly.style.animationDuration = `${8 + Math.random() * 6}s`;
+
+        firefly.addEventListener('animationiteration', () => {
+            randomizeFirefly(firefly);
+        });
+
+        document.body.appendChild(firefly);
+    }
+}
 
 function isFolderInTrash(folder, itemMap) {
     let current = folder;
@@ -369,7 +397,7 @@ function createListItem(item) {
         const count = [...text].length; // 文字単位でカウント
         return `${count}文字`;
     })() : '';
-
+    
 
 
     const displayTitle = escapeHTML(item.title) || getDefaultTitle();
@@ -499,7 +527,7 @@ function undoEditor() {
         editorText.value = previousState;
         updateCharCount();
         triggerAutoSave();
-
+        
     } else {
         showStatus('これ以上戻せないよ🦄');
     }
@@ -553,7 +581,7 @@ function openEditor(id) {
         const item = request.result;
         if (item) {
             editorTitle.value = item.title || '';
-
+            
             // ✅ ここに追加！ 描画後に高さを計算する
             // setTimeout(0) で「次の描画フレーム」の後に実行されます
             setTimeout(() => {
@@ -562,13 +590,13 @@ function openEditor(id) {
             const newHeight = editorTitle.scrollHeight;
             const minHeight = 40;
             const finalHeight = Math.max(newHeight, minHeight);
-
+            
             editorTitle.style.height = newHeight + 'px';
             }, 0); // 0ms 待機（実際には次のフレームで実行）
             editorText.value = item.text || '';
-
+            
         updateCharCount();
-
+            
             resetUndoHistory(editorText.value);
         }
         switchView('editor');
@@ -998,10 +1026,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
+    
     if (editorTitle) {
     editorTitle.addEventListener('input', triggerAutoSave);
-
+        
         editorTitle.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
@@ -1010,10 +1038,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editorText) {
     editorText.addEventListener('input', triggerAutoSave);
     editorText.addEventListener('input', updateCharCount); // ✅ 文字数カウント
-
+    
     // 初期値セット
     updateCharCount();
-
+    
     editorText.addEventListener('paste', () => {
             setTimeout(updateCharCount, 0);
             recordUndoState();
@@ -1028,8 +1056,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (searchInput) {
         searchInput.addEventListener('input', () => loadItems());
     }
-
-
+    
+    
     if (btnSearchClear) {
         btnSearchClear.addEventListener('click', () => {
             if (searchInput) searchInput.value = '';
@@ -1042,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
+    
 function setupTouchEvents() {
   const mainView = document.getElementById('main-view');
   if (!mainView) return;
