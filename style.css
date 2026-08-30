@@ -106,11 +106,11 @@ input, textarea {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100svh;
   width: 100%;
   background-color: transparent;
   overflow-y: auto;
-
+  min-height: 100svh;
 }
 
 /* Header */
