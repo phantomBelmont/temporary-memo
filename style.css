@@ -109,6 +109,7 @@ input, textarea {
   width: 100%;
   overflow: hidden;
   background-color: transparent;
+  overflow-y: auto;
 }
 
 /* Header */
@@ -117,6 +118,7 @@ input, textarea {
   top: 0;
   z-index: 1500;
   display: flex;
+  flex-shrink: 0;
   background-color: #000;
   width: 100%;
 }
@@ -246,7 +248,7 @@ input, textarea {
 
 #editor {
   display: block;
-  height: 80%;
+  height: 100%;
   width: 100%;
   border: 1px solid var(--editor-border);
   font-size: 18px;
