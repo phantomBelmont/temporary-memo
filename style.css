@@ -15,7 +15,7 @@
   --neon-blue: #00aaaa;
   --neon-red: #a00;
   --neon-orange: #ff9e00;
-  
+
   /* UI Colors */
   --border-color: #333;
   --focus-glow: #aaffaa;
@@ -65,7 +65,7 @@ input, textarea {
   height: 100%;
   z-index: 2000;
   pointer-events: none;
-  
+
   /* Optimized Background Pattern */
   background-size: 200px 200px;
   background-image: 
@@ -74,7 +74,7 @@ input, textarea {
     radial-gradient(2px 2px at 10px 30px, pink, rgba(0,0,0,0)),
     radial-gradient(2px 2px at 150px 120px, aqua, rgba(0,0,0,0)),
     radial-gradient(2px 2px at 120px 150px, white, rgba(0,0,0,0));
-  
+
   /* Optimized Animation */
   will-change: transform, opacity;
   animation: moveDiagonal 8s linear infinite, twinkle 3s ease-in-out infinite;
@@ -140,6 +140,7 @@ input, textarea {
 
 .visitor-header {
   position: sticky;
+  height: 6rem;
   top: 0;
   display: flex;
   justify-content: space-between;
@@ -236,7 +237,7 @@ input, textarea {
 
 #editor {
   display: block;
-  height: 100%;
+  height: 80%;
   width: 100%;
   border: 1px solid var(--editor-border);
   font-size: 18px;
@@ -374,7 +375,7 @@ input, textarea {
   padding-left: 20px;
   font-size: 1.2rem;
   color: gold;
-  top: 110px;
+  top: 6rem;
   background: #333;
   z-index: 500;
 }
