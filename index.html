@@ -22,6 +22,7 @@
 <body>
 
 <div class="stars"></div>
+<div class="constellations"></div>
 
 <div class="all-contents">
     <div id="memo-screen">
@@ -31,7 +32,7 @@
                 <button class="blue push" id="btn-move" style="display:none;">🚐<br>Move</button>
                 <button class="red push" id="btn-delete" style="display:none;">🗑️<br>trash</button>
             </div>
-            
+
             <!--中央グループ-->
             <div class="group-center">
                   <label for="editor-title">Title:</label>
@@ -43,8 +44,8 @@
                 <div id="message"></div>
                 <div id="char-count-display" class="char-count">0文字</div>
             </div>
-            
-            
+
+
             <div id="edit-btns" class="group-right">
                     <button class=" green push" id="btn-copy" title="全コピー">📋<br>Copy</button>
                     <button class="push yellow" id="btn-clear" title="クリア">🧹<br>Clear</button>
@@ -58,20 +59,21 @@
             </div>
         </div>
     </div><!--memo-screenここまで-->
-    
-    
-    
+
+
+
     <div id="visitor-screen">
+    <div class="head-n-bread">
         <header class="visitor-header">
             <button class="green push" id="btn-new">+<br>Add</button>
-            
+
             <!-- 検索バー ＆ 並び替えコントロール -->
             <div class="search-container">
                 <div class="search-wrapper">
                     <input type="text" id="search-input" class="search-input" placeholder="🔍">
                     <button id="btn-search-clear" class="search-clear-btn" style="display: none;">×</button>
                 </div>
-                
+
                 <div class="sort-wrapper">
                     <label for="sort-select">Sort:</label>
                     <select id="sort-select" class="sort-select">
@@ -82,11 +84,13 @@
                     </select>
                 </div><!--sort-wrapper終了-->
             </div>
-        
         </header>
+
                 <!-- パンくずリスト -->
                 <div id="breadcrumb" class="breadcrumb"></div>
-            <!-- メイン表示領域（1段目：フォルダ / 2段目：メモ） -->
+</div><!--head-n-breadここまで-->
+        
+        
             <div id="main-view"></div>
     </div><!--visitor-screen終了-->
 
@@ -94,7 +98,7 @@
 
 
 
-    
+
     <!-- 移動モーダル -->
     <div id="move-modal">
         <div class="modal-content">
@@ -103,7 +107,7 @@
             <button id="btn-move-cancel" class="move-folder-cancel red push">Cancel</button>
         </div>
     </div>
-    
+
     <!-- 新規作成モーダル -->
     <div id="new-modal">
         <div class="new-modal-content">
@@ -115,8 +119,8 @@
             </div>
         </div>
     </div>
-    
-    
+
+
 </div>
 <script src="script.js"></script>
 </body>
