@@ -144,6 +144,7 @@ input, textarea {
   display: flex;
   flex-direction:column;
   position: sticky;
+  flex-shrink: 0;
   top: 0px;
   z-index:1000;
 }
@@ -157,7 +158,6 @@ input, textarea {
   z-index: 3000;
   padding: 10px 16px;
   background: #000;
-  overflow-y: ;
   overflow-x: hidden;
   flex-shrink: 0;
 }
@@ -413,6 +413,7 @@ input, textarea {
   padding: 10px 16px;
   position: relative;
   z-index: 1;
+  flex-grow: 1;
 }
 
 .section-container {
