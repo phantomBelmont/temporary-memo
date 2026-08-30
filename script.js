@@ -900,7 +900,14 @@ function performMove(id, newParentId) {
             store.put(item);
         }
     };
-
+    document.addEventListener('focusin', (e) => {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+        // Slight delay to allow keyboard to animate
+        setTimeout(() => {
+            e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    }
+});
     transaction.oncomplete = () => {
         if (moveModal) moveModal.style.display = 'none';
         showStatus('移動しました 🚐');
@@ -1064,3 +1071,4 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, { passive: true });
             }
+            
