@@ -232,8 +232,10 @@ input, textarea {
 
 #editor-view {
   display: none;
-  flex-direction: column;
+  position:sicky;
+  bottom: 0;
   flex-grow: 1;
+  flex-shrink: 0;
   width: 100%;
   min-height: 0;
   background: transparent;
