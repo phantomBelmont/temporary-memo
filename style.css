@@ -106,7 +106,7 @@ input, textarea {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100svh;
+  height:min(100dvh, 100svh);
   width: 100%;
   background-color: transparent;
   overflow-y: auto;
