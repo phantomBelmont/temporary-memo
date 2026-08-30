@@ -35,7 +35,7 @@ function showStatus(text) {
 // ==========================================
 // 1. 定数と状態管理
 // ==========================================
-const DB_NAME = 'FireflyNoteDB'; // Note: Name kept as is, but firefly effect removed
+const DB_NAME = 'FireflyNoteDB';
 const DB_VERSION = 2;
 const STORE_NAME = 'items';
 
@@ -72,7 +72,6 @@ const btnClearHeader = document.getElementById('btn-clear-header');
 const btnTitleClear = document.getElementById('btn-title-clear');
 const editBtns = document.getElementById('edit-btns');
 
-
 const searchInput = document.getElementById('search-input');
 const btnSearchClear = document.getElementById('btn-search-clear');
 const sortSelect = document.getElementById('sort-select');
@@ -93,6 +92,26 @@ const newModal = document.getElementById('new-modal');
 const btnNewFolder = document.getElementById('btn-new-folder');
 const btnNewNote = document.getElementById('btn-new-note');
 const btnNewCancel = document.getElementById('btn-new-cancel');
+
+// ==========================================
+// キーボード開閉イベント処理
+// ==========================================
+function handleKeyboardOpen(memoHeader) {
+  const headerHeight = memoHeader ? memoHeader.offsetHeight : 0;
+  
+  document.body.classList.add('keyboard-open');
+  
+  requestAnimationFrame(() => {
+    const activeElement = document.activeElement;
+    if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+      activeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+function handleKeyboardClose() {
+  document.body.classList.remove('keyboard-open');
+}
 
 // ==========================================
 // 3. 初期化 ＆ DB設定 ＆ 孤立データ一掃
@@ -152,9 +171,6 @@ function sanitizeDatabase() {
         tx.onerror = () => resolve();
     });
 }
-
-// ✅ FIREFLIES REMOVED: The createFireflies function is completely deleted here.
-// This prevents battery drain and any potential crashes from missing elements.
 
 function isFolderInTrash(folder, itemMap) {
     let current = folder;
@@ -287,7 +303,6 @@ function renderBreadcrumb() {
     });
 }
 
-// フォルダ段（1段目）とメモ段（2段目）に分離して描写
 function renderSections(items) {
     if (!mainView) return;
     mainView.innerHTML = '';
@@ -312,14 +327,12 @@ function renderSections(items) {
     const folders = items.filter(i => i.type === 'folder');
     const notes = items.filter(i => i.type === 'note');
 
-    // 1段目: フォルダ領域
     const folderSection = document.createElement('div');
     folderSection.className = 'section-container';
     folderSection.innerHTML = `<div class="section-title">💼 フォルダ</div>`;
     const folderRow = document.createElement('div');
     folderRow.className = 'list-row-container';
 
-    // ルートの場合ゴミ箱も先頭表示
     const searchQuery = searchInput ? searchInput.value.trim() : '';
     if (currentFolderId === 'root' && searchQuery === '') {
         const trashItem = document.createElement('div');
@@ -336,9 +349,7 @@ function renderSections(items) {
 
     folders.forEach(item => folderRow.appendChild(createListItem(item)));
     folderSection.appendChild(folderRow);
-    mainView.appendChild(folderSection);
 
-    // 2段目: メモ領域
     const noteSection = document.createElement('div');
     noteSection.className = 'section-container';
     noteSection.innerHTML = `<div class="section-title">📜 メモ</div>`;
@@ -347,19 +358,16 @@ function renderSections(items) {
 
     notes.forEach(item => noteRow.appendChild(createListItem(item)));
     noteSection.appendChild(noteRow);
-    mainView.appendChild(noteSection);
 
     if (items.length === 0) {
-    let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'このフォルダは空です<br>左上Addで作れるよ 🪄';
-    mainView.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
-} else {
-    // 中身がある場合は「フォルダ」「メモ」の各セクションを追加
-    mainView.appendChild(folderSection);
-    mainView.appendChild(noteSection);
-}
+        let emptyMsg = searchQuery !== '' ? '見つかりませんでした... 🔍' : 'このフォルダは空です<br>左上Addで作れるよ 🪄';
+        mainView.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
+    } else {
+        mainView.appendChild(folderSection);
+        mainView.appendChild(noteSection);
+    }
 }
 
-// リスト要素生成
 function createListItem(item) {
     const el = document.createElement('div');
     el.className = `list-item ${item.type}`;
@@ -367,10 +375,9 @@ function createListItem(item) {
     const icon = item.type === 'folder' ? '💼' : '📜';
     const charCount = item.type === 'note' ? (()=>{
         const text = item.text || '';
-        const count = [...text].length; // 文字単位でカウント
+        const count = [...text].length;
         return `${count}文字`;
     })() : '';
-    
 
     const displayTitle = escapeHTML(item.title) || getDefaultTitle();
 
@@ -381,7 +388,7 @@ function createListItem(item) {
                 <div class="list-item-title">${displayTitle}</div>
             </div>
             <div class="list-item-actions">
-                <button class="card-btn card-restore  green push" title="復元">↩️</button>
+                <button class="card-btn card-restore green push" title="復元">↩️</button>
                 <button class="card-btn card-delete-perm red push" title="削除">×</button>
             </div>
         `;
@@ -499,17 +506,15 @@ function undoEditor() {
         editorText.value = previousState;
         updateCharCount();
         triggerAutoSave();
-        
     } else {
         showStatus('これ以上戻せないよ🦄');
     }
 }
 
 function copyAllText() {
-    navigator.clipboard.writeText(editorText.value).then(() => {
-    })
+    navigator.clipboard.writeText(editorText.value).then(() => {})
     .catch((err) => {
-            console.error('コピーに失敗しました', err);
+        console.error('コピーに失敗しました', err);
     });
 }
 
@@ -520,19 +525,11 @@ function clearEditorText() {
     updateCharCount();
     recordUndoState();
     triggerAutoSave();
-    ;
 }
-// ==========================================
-// 文字数カウント用グローバル関数
-// ==========================================
-// 1. 文字数表示用要素を取得（グローバルスコープで）
+
 const charCountDisplay = document.getElementById('char-count-display');
 
-// 2. 文字数更新関数（グローバルスコープで定義！）
-
-
 function updateCharCount() {
-    // ✅ 安全チェック：要素が存在するか確認
     if (!editorText || !charCountDisplay) {
         console.warn('updateCharCount: editorText or charCountDisplay is null');
         return;
@@ -554,21 +551,15 @@ function openEditor(id) {
         if (item) {
             editorTitle.value = item.title || '';
             
-            // ✅ ここに追加！ 描画後に高さを計算する
-            // setTimeout(0) で「次の描画フレーム」の後に実行されます
             setTimeout(() => {
-            // ✅ ここが重要！ 値をセットした直後に高さをリセット＆再計算
-            editorTitle.style.height = 'auto'; // 一度リセット
-            const newHeight = editorTitle.scrollHeight;
-            const minHeight = 40;
-            const finalHeight = Math.max(newHeight, minHeight);
+                editorTitle.style.height = 'auto';
+                const newHeight = editorTitle.scrollHeight;
+                const minHeight = 40;
+                editorTitle.style.height = Math.max(newHeight, minHeight) + 'px';
+            }, 0);
             
-            editorTitle.style.height = newHeight + 'px';
-            }, 0); // 0ms 待機（実際には次のフレームで実行）
             editorText.value = item.text || '';
-            
-        updateCharCount();
-            
+            updateCharCount();
             resetUndoHistory(editorText.value);
         }
         switchView('editor');
@@ -615,7 +606,6 @@ function triggerAutoSave() {
 function saveNoteRealtime() {
     if (currentNoteId === null) return;
 
-    // 空欄時は現在の日時をデフォルト適用
     const title = editorTitle.value.trim() || getDefaultTitle();
     const text = editorText.value;
     const updatedAt = new Date().toISOString();
@@ -648,8 +638,8 @@ function switchView(view) {
     if (view === 'gallery') {
         if (memoScreen) memoScreen.style.display = 'none';
         if (editorView) editorView.style.display = 'none';
-        if(editorTitleWrap) editorTitleWrap.style.display = 'none';
-        if(editorTitle) editorTitle.style.display = 'none';
+        if (editorTitleWrap) editorTitleWrap.style.display = 'none';
+        if (editorTitle) editorTitle.style.display = 'none';
         if (editBtns) editBtns.style.display = 'none';
         if (visitorScreen) visitorScreen.style.display = 'flex';
         if (mainView) mainView.style.display = 'block';
@@ -666,7 +656,7 @@ function switchView(view) {
         if (memoScreen) memoScreen.style.display = 'flex';
         if (editorView) editorView.style.display = 'flex';
         if (editorTitleWrap) editorTitleWrap.style.display = 'flex';
-        if(editorTitle) editorTitle.style.display = 'flex';
+        if (editorTitle) editorTitle.style.display = 'flex';
         if (editBtns) editBtns.style.display = 'flex';
         if (visitorScreen) visitorScreen.style.display = 'none';
         if (mainView) mainView.style.display = 'none';
@@ -679,7 +669,6 @@ function switchView(view) {
         if (btnDelete) btnDelete.style.display = 'inline-block';
 
         if (editorText) editorText.focus();
-
     }
     updateBackButton();
 }
@@ -912,8 +901,27 @@ function performMove(id, newParentId) {
 // 8. イベントリスナー設定 ＆ 初期化起動
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    const memoHeader = document.querySelector('.memo-header');
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (window.innerHeight < window.outerHeight - 50 || document.visibilityState === 'hidden') {
+                handleKeyboardOpen(memoHeader);
+            } else {
+                handleKeyboardClose();
+            }
+        }, 100);
+    }, { passive: true });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            handleKeyboardClose();
+        }
+    });
+
     initDB().then(() => {
-        // ✅ FIREFLIES REMOVED: createFireflies() call deleted here.
         switchView('gallery');
     }).catch(err => {
         console.error("DB初期化失敗:", err);
@@ -954,7 +962,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // モーダル外枠クリックで閉じる処理 (⑧)
     if (newModal) {
         newModal.addEventListener('click', (e) => {
             if (e.target === newModal) {
@@ -962,106 +969,101 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
     if (moveModal) {
         moveModal.addEventListener('click', (e) => {
             if (e.target === moveModal) {
                 moveModal.style.display = 'none';
             }
-            });
+        });
+    }
+    
+    if (btnDelete) {
+        btnDelete.addEventListener('click', () => {
+            if (currentNoteId !== null) moveToTrash(currentNoteId);
+        });
+    }
+    
+    if (btnMove) {
+        btnMove.addEventListener('click', () => {
+            if (currentNoteId !== null) {
+                openMoveModalForItem(currentNoteId, 'note', editorTitle.value);
             }
-            
-            if (btnDelete) {
-                btnDelete.addEventListener('click', () => {
-                    if (currentNoteId !== null) moveToTrash(currentNoteId);
-                });
-            }
-            
-            if (btnMove) {
-                btnMove.addEventListener('click', () => {
-                    if (currentNoteId !== null) {
-                        openMoveModalForItem(currentNoteId, 'note', editorTitle.value);
-                    }
-                });
-            }
-            
-            if (btnClearHeader) btnClearHeader.addEventListener('click', clearEditorText);
-            if (btnUndo) btnUndo.addEventListener('click', undoEditor);
-            if (btnCopy) btnCopy.addEventListener('click', copyAllText);
-            if (btnClear) btnClear.addEventListener('click', clearEditorText);
-            
-            // タイトル全クリアボタン (③)
-            if (btnTitleClear) {
-                btnTitleClear.addEventListener('click', () => {
-                    if (editorTitle) {
-                        editorTitle.value = '';
-                        triggerAutoSave();
-                    }
-                });
-            }
-            
+        });
+    }
+    
+    if (btnClearHeader) btnClearHeader.addEventListener('click', clearEditorText);
+    if (btnUndo) btnUndo.addEventListener('click', undoEditor);
+    if (btnCopy) btnCopy.addEventListener('click', copyAllText);
+    if (btnClear) btnClear.addEventListener('click', clearEditorText);
+    
+    if (btnTitleClear) {
+        btnTitleClear.addEventListener('click', () => {
             if (editorTitle) {
-                editorTitle.addEventListener('input', triggerAutoSave);
-                
-                editorTitle.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight) + 'px';
-                });
+                editorTitle.value = '';
+                triggerAutoSave();
             }
-            if (editorText) {
-                editorText.addEventListener('input', triggerAutoSave);
-                editorText.addEventListener('input', updateCharCount); // ✅ 文字数カウント
-                
-                // 初期値セット
-                updateCharCount();
-                
-                editorText.addEventListener('paste', () => {
-                    setTimeout(updateCharCount, 0);
-                    recordUndoState();
-                });
-                editorText.addEventListener('cut', () => {
-                    setTimeout(updateCharCount, 0);
-                    recordUndoState();
-                });
+        });
+    }
+    
+    if (editorTitle) {
+        editorTitle.addEventListener('input', triggerAutoSave);
+        
+        editorTitle.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+
+    if (editorText) {
+        editorText.addEventListener('input', triggerAutoSave);
+        editorText.addEventListener('input', updateCharCount);
+        
+        updateCharCount();
+        
+        editorText.addEventListener('paste', () => {
+            setTimeout(updateCharCount, 0);
+            recordUndoState();
+        });
+        editorText.addEventListener('cut', () => {
+            setTimeout(updateCharCount, 0);
+            recordUndoState();
+        });
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', () => loadItems());
+    }
+    
+    if (btnSearchClear) {
+        btnSearchClear.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            loadItems();
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => loadItems());
+    }
+});
+
+function setupTouchEvents() {
+    const mainView = document.getElementById('main-view');
+    if (!mainView) return;
+    
+    const AUTO_SCROLL_SPEED = 2;
+    
+    mainView.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+            const pointerY = e.touches[0].clientY;
+            const rect = mainView.getBoundingClientRect();
+            const threshold = 40;
+            
+            if (pointerY < rect.top + threshold) {
+                mainView.scrollTop -= AUTO_SCROLL_SPEED;
+            } else if (pointerY > rect.bottom - threshold) {
+                mainView.scrollTop += AUTO_SCROLL_SPEED;
             }
-            
-            
-            if (searchInput) {
-                searchInput.addEventListener('input', () => loadItems());
-            }
-            
-            
-            if (btnSearchClear) {
-                btnSearchClear.addEventListener('click', () => {
-                    if (searchInput) searchInput.value = '';
-                    loadItems();
-                });
-            }
-            if (sortSelect) {
-                sortSelect.addEventListener('change', () => loadItems());
-            }
-            });
-            
-            function setupTouchEvents() {
-                const mainView = document.getElementById('main-view');
-                if (!mainView) return;
-                
-                // NOTE: AUTO_SCROLL_SPEED needs to be defined somewhere in your CSS or JS if you use it.
-                // If you don't have it defined, this function might cause an error. 
-                // I'll assume it's defined globally in your CSS/JS as a constant or variable.
-                const AUTO_SCROLL_SPEED = 2; // Default fallback if not defined
-                
-                mainView.addEventListener('touchmove', (e) => {
-                    if (e.touches.length > 0) {
-                        const pointerY = e.touches[0].clientY;
-                        const rect = mainView.getBoundingClientRect();
-                        const threshold = 40;
-                        
-                        if (pointerY < rect.top + threshold) {
-                            mainView.scrollTop -= AUTO_SCROLL_SPEED;
-                        } else if (pointerY > rect.bottom - threshold) {
-                            mainView.scrollTop += AUTO_SCROLL_SPEED;
-                        }
-                    }
-                }, { passive: true });
-            }
-            
+        }
+    }, { passive: true });
+}
