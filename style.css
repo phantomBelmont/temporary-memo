@@ -213,7 +213,7 @@ input, textarea {
   background: #700;
   border: none;
   border-radius: 50%;
-  color: #ddd;
+  color: #aaa;
   font-size: 1.4rem;
   cursor: pointer;
   line-height: 1;
@@ -353,7 +353,7 @@ input, textarea {
   transform: translateY(-50%);
   background: #700;
   box-shadow: 0 0 10px #700000;
-  color: #ddd;
+  color: #aaa;
   border: none;
   border-radius: 50%;
   width: 20px;
@@ -368,12 +368,12 @@ input, textarea {
 .sort-wrapper {
   display: block;
   font-size: 0.8rem;
-  color: #ddd;
+  color: #aaa;
 }
 
 .sort-select {
   background: transparent;
-  color: #ddd;
+  color: #aaa;
   border-color: #ffff00;
   box-shadow: 0 0 10px #dd0;
   border-radius: 3px;
@@ -495,7 +495,7 @@ input, textarea {
   padding: 0;
   text-align: center;
   font-size: 1.5rem;
-  color: #ddd;
+  color: #aaa;
 }
 
 .empty-state {
@@ -579,7 +579,7 @@ input, textarea {
   font-weight: 700;
   margin-bottom: 15px;
   text-align: center;
-  color: #ddd;
+  color: #aaa;
 }
 
 .new-btn-group {
@@ -598,7 +598,7 @@ input, textarea {
   padding: 10px;
   border-bottom: 1px solid var(--border-color);
   cursor: pointer;
-  color: #ddd;
+  color: #aaa;
   margin: 0 auto;
 }
 
