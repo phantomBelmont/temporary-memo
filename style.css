@@ -437,6 +437,7 @@ input, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color:#aaa;
   background: transparent;
   border: 1px solid var(--border-color);
   border-radius: 3px;
@@ -462,7 +463,7 @@ input, textarea {
 .list-item-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #d4d4d4;
+  color: #aaa;
   white-space: normal;
   word-break: break-word;
   overflow-wrap: anywhere;
