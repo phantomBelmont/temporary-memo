@@ -2,7 +2,7 @@
   /* Core Colors */
   --bg-color: transparent;
   --card-bg: transparent;
-  --text-color: #ddd;
+  --text-color: #aaa;
   --accent-color: #070;
   --accent-hover: #7dd3fc;
   --gray: #94a3b8;
@@ -260,7 +260,7 @@ input, textarea {
   outline: none;
   border-radius: 3px;
   background: transparent;
-  color: #ddd;
+  color: #aaa;
   overflow-x: hidden;
   overflow-y: auto;
   scroll-behavior: auto;
