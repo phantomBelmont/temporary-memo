@@ -4,7 +4,7 @@
   --card-bg: transparent;
   --text-color: #aaa;
   --accent-color: #070;
-  --accent-hover: #7dd3fc;
+  --accent-hover: #077;
   --gray: #94a3b8;
 
   /* Neon Palette */
@@ -12,15 +12,15 @@
   --neon-green: #0a0;
   --neon-yellow: #aaaa00;
   --neon-purple: #bc13fe;
-  --neon-blue: #00aaaa;
+  --neon-blue: #077;
   --neon-red: #a00;
   --neon-orange: #ff9e00;
 
   /* UI Colors */
   --border-color: #333;
-  --focus-glow: #aaffaa;
-  --editor-border: #9000FF;
-  --editor-focus: #0aa;
+  --focus-glow: #77aa77;
+  --editor-border: #333;
+  --editor-focus: #559955;
 }
 
 *, *::before, *::after {
@@ -182,7 +182,7 @@ input, textarea {
 
 #editor-title-wrapper:focus-within {
   border: 1px solid var(--focus-glow);
-  box-shadow: 0 0 10px var(--focus-glow);
+  box-shadow: 0 0 5px var(--focus-glow);
 }
 
 #editor-title-wrapper textarea {
@@ -400,13 +400,13 @@ input, textarea {
 
 .breadcrumb-item:hover {
   text-decoration: underline;
-  color: #0ff;
+  color: #077;
 }
 
 .breadcrumb-separator {
   display: inline-block;
   margin: 0 6px;
-  color: #0ff;
+  color: #077;
 }
 
 /* ==========================================
@@ -449,8 +449,7 @@ input, textarea {
 
 .list-item:hover {
   transform: translateY(-2px);
-  border-color: #0ff;
-  color: #0ff;
+  border-color: #077;
 }
 
 .list-item-icon {
@@ -469,9 +468,6 @@ input, textarea {
   overflow-wrap: anywhere;
 }
 
-.list-item-title:active {
-  color: #0ff;
-}
 
 .list-item-sub {
   font-size: 1rem;
