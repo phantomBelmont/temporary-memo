@@ -1,3 +1,14 @@
+    //サービスワーカー登録
+    if('serviceWorker' in navigator){
+      window.addEventListener('load',()=>{
+        navigator.serviceWorker.register('./sw.js').then(reg=>console.log('SW登録成功!',reg)
+        )//thenここまで
+        .catch(err=>console.log('SW登録失敗🥲',err)
+        );//catchここまで
+      }//ロードイベントのアロー関数ここまで
+      );//イベリス ここまで
+    }//ifここまで
+
 function escapeHTML(str) {
     return (str || '').replace(/[&<>"']/g, function(match) {
         const escape = {
