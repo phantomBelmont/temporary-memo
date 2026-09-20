@@ -1,4 +1,4 @@
-const T_noteCACHE = 'v7';
+const T_noteCACHE = 'v8';
 const ASSETS = [
   './',
   './index.html',
@@ -48,8 +48,7 @@ self.addEventListener('fetch',fe=>{
     )//fetch().then
     .catch(()=>{});
     
-    return 
-    cachedRes || fetchPromise
+    return cachedRes || fetchPromise
   }//match().then arrow
   )//match().then
   )//respondWith
