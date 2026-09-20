@@ -1,4 +1,4 @@
-const T_noteCACHE = 'v5';
+const T_noteCACHE = 'v6';
 const ASSETS = [
   './',
   './index.html',
