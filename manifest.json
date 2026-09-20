@@ -1,6 +1,6 @@
 {
   "name": "Temporary Note",
-  "short_name": "一時メモ",
+  "short_name": "🐦一時メモ",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000",
