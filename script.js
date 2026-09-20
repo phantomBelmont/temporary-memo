@@ -1,7 +1,7 @@
     //サービスワーカー登録
     if('serviceWorker' in navigator){
       window.addEventListener('load',()=>{
-        navigator.serviceWorker.register('./sw.js').then(reg=>console.log('SW登録成功!',reg)
+        navigator.serviceWorker.register('./sw.v2.js').then(reg=>console.log('SW登録成功!',reg)
         )//thenここまで
         .catch(err=>console.log('SW登録失敗🥲',err)
         );//catchここまで
