@@ -3,21 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0>
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self';
-        style-src 'self';
-        img-src 'self' data: https:;
-        font-src 'self' data:;
-        connect-src 'self';
-        base-uri 'self';
-        form-action 'self';
-        worker-src 'self';
-        upgrade-insecure-requests;
-        block-all-mixed-content;
-    ">
+    
+    <meta http-equiv="Content-Security-Policy"
+  
+    content= "default-src 'self'; 
+    script-src 'self'; 
+    style-src 'self'; 
+    img-src 'self' data: https:; 
+    font-src 'self' data:; 
+    connect-src 'self'; 
+    base-uri 'self'; 
+    form-action 'self'; 
+    manifest-src 'self'; 
+    worker-src 'self'; 
+    frame-ancestors 'self'; 
+    upgrade-insecure-requests
+  ">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <title>🐦 一時メモ</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="./style.css">
+    
+     <link rel="manifest"
+  href="./manifest.json">
+  
 </head>
 <body>
 
@@ -89,8 +101,8 @@
                 <!-- パンくずリスト -->
                 <div id="breadcrumb" class="breadcrumb"></div>
 </div><!--head-n-breadここまで-->
-        
-        
+
+
             <div id="main-view"></div>
     </div><!--visitor-screen終了-->
 
@@ -122,6 +134,6 @@
 
 
 </div>
-<script src="script.js"></script>
+<script src="./script.js"></script>
 </body>
 </html>
