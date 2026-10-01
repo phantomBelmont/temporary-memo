@@ -925,7 +925,7 @@ function performMove(id, newParentId) {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     initDB().then(() => {
-        // ✅ FIREFLIES REMOVED: createFireflies() call deleted here.
+        
         switchView('gallery');
     }).catch(err => {
         console.error("DB初期化失敗:", err);
@@ -1076,3 +1076,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, { passive: true });
             }
+            
+            function syncSpinner() {
+    document.body.classList.toggle('is-visible', !document.hidden);
+}
+syncSpinner(); 
+
+document.addEventListener('visibilitychange', syncSpinner);
