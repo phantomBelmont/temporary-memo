@@ -54,10 +54,7 @@ input, textarea {
   caret-color: #aaffaa;
 }
 
-/* ==========================================
-   Battery-Friendly Background (Starfield)
-   Uses GPU-accelerated transform instead of background-position
-   ========================================== */
+
 .stars {
   position: fixed;
   top: 0;
@@ -67,7 +64,7 @@ input, textarea {
   z-index: 2000;
   pointer-events: none;
 
-  /* Optimized Background Pattern */
+
   background-size: 200px 200px;
   background-image: 
     radial-gradient(2px 2px at 50px 50px, orange, rgba(0,0,0,0)),
@@ -76,10 +73,16 @@ input, textarea {
     radial-gradient(2px 2px at 150px 120px, aqua, rgba(0,0,0,0)),
     radial-gradient(2px 2px at 120px 150px, white, rgba(0,0,0,0));
 
-  /* Optimized Animation */
   will-change: transform, opacity;
   animation: moveDiagonal 8s linear infinite, twinkle 3s ease-in-out infinite;
   opacity: 0.6; /* Slightly dimmed to save battery */
+  animation-play-state:paused;
+}
+
+body.is-visible .stars{ animation-play-state:running; }
+
+@media (prefers-reduced-motion: reduce){
+  .stars{ animation:none; }
 }
 
 @keyframes moveDiagonal {
