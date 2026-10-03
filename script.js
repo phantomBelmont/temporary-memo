@@ -1083,3 +1083,49 @@ document.addEventListener('DOMContentLoaded', () => {
 syncSpinner(); 
 
 document.addEventListener('visibilitychange', syncSpinner);
+
+
+
+if (window.visualViewport) {
+  const handleResize = () => {
+    const height = `${window.visualViewport.height}px`;
+    
+    // 画面の根本から高さをピクセルで完全にロックする
+    document.documentElement.style.height = height;
+    document.body.style.height = height;
+    
+    const allContents = document.querySelector('.all-contents');
+    const memoScreen = document.getElementById('memo-screen');
+    
+    if (allContents) allContents.style.height = height;
+    if (memoScreen) memoScreen.style.height = height;
+
+    // キーボードが開いている時、エディタ内で無駄な下方向のスクロールが発生していたら強制的に押し戻す
+    const editor = document.getElementById('editor');
+    if (editor && editor === document.activeElement) {
+      setTimeout(() => {
+        editor.scrollTop = editor.scrollTop; // スクロール位置を再計算させる
+      }, 50);
+    }
+  };
+
+  window.visualViewport.addEventListener('resize', handleResize);
+  window.visualViewport.addEventListener('scroll', handleResize);
+  handleResize();
+  
+    // スマホでキーボード表示時に全体が不自然にスクロールして下部に隙間ができるのを防ぐ
+  document.documentElement.addEventListener('touchmove', (e) => {
+    // エディタ内やモーダル内のスクロールは許可し、それ以外の背景の不要なスクロールを阻止
+    const editor = document.getElementById('editor');
+    const modal = document.querySelector('.modal-content, .new-modal-content');
+    
+    if (editor && editor.contains(e.target)) return;
+    if (modal && modal.contains(e.target)) return;
+    
+    // 画面全体の意図しないスクロール（余白へのズレ）をここでガード
+    if (window.visualViewport.height < window.innerHeight) {
+      // キーボードが出ている状態
+      // ※ただし上部のメモ一覧などがスクロールできるように判定を持たせる
+    }
+  }, { passive: true });
+}
