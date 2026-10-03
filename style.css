@@ -128,15 +128,19 @@ body.is-visible .stars{ animation-play-state:running; }
   width: 100%;
 }
 
+.btn-font{
+  font-size:1.2rem;
+}
 .group-center {
   display: block;
-  max-width: 55%;
+  max-width: 65%;
 }
 
 .group-left {
   display: flex;
   flex-direction: column;
   margin-right: auto;
+  
 }
 
 .group-right {
@@ -144,7 +148,6 @@ body.is-visible .stars{ animation-play-state:running; }
   flex-direction: column;
   margin-left: auto;
 }
-
 
 
 .head-n-bread{
@@ -178,9 +181,8 @@ body.is-visible .stars{ animation-play-state:running; }
   background: transparent;
   border: transparent;
   border-radius: 3px;
-  margin: 7px;
-  padding: 5px;
-  width: 100%;
+  padding: 5px 25px 5px 5px;
+  width: 100%;#42445A;
   flex-grow: 1;
 }
 
@@ -200,7 +202,6 @@ body.is-visible .stars{ animation-play-state:running; }
   font-family: inherit;
   border: none;
   color: #9000dd;
-  padding-right: 32px;
   background: transparent;
   white-space: pre-wrap;
   word-break: break-word;
@@ -212,15 +213,18 @@ body.is-visible .stars{ animation-play-state:running; }
 
 .btn-title-clear {
   display: flex;
+  justify-content:center;
+  align-items:center;
   position: absolute;
-  right: 10px;
+  height:20px;
+  width:20px;
+  right: 5px;
   background: #700;
   border: none;
   border-radius: 50%;
   color: #aaa;
-  font-size: 1.4rem;
+  font-size: 20px;
   cursor: pointer;
-  line-height: 1;
   z-index: 50;
 }
 
@@ -229,15 +233,13 @@ body.is-visible .stars{ animation-play-state:running; }
 }
 
 .char-count {
-  margin-top: 20px;
+  font-size:1.2rem;
   text-align: center;
   color: #0090DD;
 }
 
 #editor-view {
   display: none;
-  position:sicky;
-  bottom: 0;
   flex-grow: 1;
   flex-shrink: 0;
   width: 100%;
@@ -245,6 +247,7 @@ body.is-visible .stars{ animation-play-state:running; }
   background: transparent;
   z-index: 500;
   padding: 10px;
+  margin-right:10px;
 }
 
 .editor-body-wrapper {
@@ -259,11 +262,12 @@ body.is-visible .stars{ animation-play-state:running; }
   height: 100%;
   width: 100%;
   border: 1px solid var(--editor-border);
-  font-size: 18px;
+  font-size: 1.32rem;
   resize: none;
   outline: none;
   border-radius: 3px;
   background: transparent;
+  padding:3px 7px;
   color: #aaa;
   overflow-x: hidden;
   overflow-y: auto;
@@ -296,7 +300,7 @@ body.is-visible .stars{ animation-play-state:running; }
   cursor: pointer;
   font-family: inherit;
   font-weight: 1000;
-  padding: 8px 16px;
+  padding: 5px 10px;
   transition: transform 0.1s, box-shadow 0.1s;
   position: relative;
   background: transparent;
@@ -356,7 +360,6 @@ body.is-visible .stars{ animation-play-state:running; }
   top: 50%;
   transform: translateY(-50%);
   background: #700;
-  box-shadow: 0 0 10px #700000;
   color: #aaa;
   border: none;
   border-radius: 50%;
