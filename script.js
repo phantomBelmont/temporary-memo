@@ -925,7 +925,7 @@ function performMove(id, newParentId) {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     initDB().then(() => {
-        
+
         switchView('gallery');
     }).catch(err => {
         console.error("DB初期化失敗:", err);
@@ -1076,31 +1076,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, { passive: true });
             }
-            
+
             function syncSpinner() {
     document.body.classList.toggle('is-visible', !document.hidden);
 }
 syncSpinner(); 
 
 document.addEventListener('visibilitychange', syncSpinner);
-
-
- 
-      
-
-
-if (window.visualViewport) {
-  const handleResize = () => {
-    const allContents = document.querySelector('.all-contents');
-    if (allContents) {
-      // 1. キーボード分を含まない「本当の表示領域の高さ」を取得して適用
-      allContents.style.height = `${window.visualViewport.height}px`;
-    }
-  };
-
-  // 2. 画面のサイズやスクロールが変わる（＝キーボードが出る・消える）たびに実行
-  window.visualViewport.addEventListener('resize', handleResize);
-  
-  // 3. ページを開いた時にも一度実行しておく
-  handleResize();
-}
