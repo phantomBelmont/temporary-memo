@@ -31,23 +31,26 @@
 }
 
 html {
+  position:fixed;
   background-color: #000;
   margin: 0;
   padding: 0;
-  height: 100svh;
+  height: 100dvh;
   width: 100%;
   overscroll-behavior: none;
   overflow: hidden;
 }
 
 body {
+  position:fixed;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   margin: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
-  position: relative;
   overflow-x: hidden;
-  height: 100svh;
+  height: 100%;
+  width:100%;
+  overflow: hidden;
 }
 
 input, textarea {
@@ -110,16 +113,15 @@ body.is-visible .stars{ animation-play-state:running; }
   position: relative;
   display: flex;
   flex-direction: column;
-  height:min(100dvh, 100svh);
+  height:100%;
   width: 100%;
   background-color: transparent;
-  overflow-y: auto;
-  min-height: 100svh;
+
 }
 
 /* Header */
 .memo-header {
-  position: sticky;
+  position: static;
   top: 0;
   z-index: 1500;
   display: flex;
@@ -195,7 +197,6 @@ body.is-visible .stars{ animation-play-state:running; }
   height: auto;
   min-height: 40px;
   max-height: 100px;
-  overflow-y: auto;
   position: relative;
   font-size: 1.2rem;
   font-weight: 600;
@@ -240,13 +241,15 @@ body.is-visible .stars{ animation-play-state:running; }
 
 #editor-view {
   display: none;
-  flex-grow: 1;
+  flex:1;
   flex-shrink: 0;
   width: 100%;
   min-height: 0;
+  height:auto;
   background: transparent;
   z-index: 500;
-  overflow-x: hidden;
+  margin-top:10px;
+  overflow: hidden;
 }
 
 .editor-body-wrapper {
@@ -256,21 +259,20 @@ body.is-visible .stars{ animation-play-state:running; }
   min-height: 0;
   width:100%;
   margin-right:20px;
-  overflow-x: hidden;
+  height:auto;
   
 }
 
 #editor {
   display: block;
-  height: 100%;
+  height: auto;
   width: 100%;
-  border: 1px solid var(--editor-border);
-  font-size: 1.32rem;
+  border: none;
+  font-size: 1.2rem;
   resize: none;
   outline: none;
-  border-radius: 3px;
   background: transparent;
-  padding:3px 7px;
+  padding:10px 5px 35vh 5px;
   color: #aaa;
   overflow-x: hidden;
   overflow-y: auto;
@@ -278,16 +280,14 @@ body.is-visible .stars{ animation-play-state:running; }
   -webkit-overflow-scrolling: touch;
 }
 
-#editor:focus {
-  border: 2px solid var(--editor-focus);
-}
+
 
 #visitor-screen {
   height: 100dvh;
   width: 100%;
   display: flex;
   flex-direction: column;
-  overflow-y: auto
+  overflow-y: auto;
 }
 
 /* ==========================================
