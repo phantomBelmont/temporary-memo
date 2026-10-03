@@ -246,8 +246,7 @@ body.is-visible .stars{ animation-play-state:running; }
   min-height: 0;
   background: transparent;
   z-index: 500;
-  padding: 10px;
-  margin-right:10px;
+  overflow-x: hidden;
 }
 
 .editor-body-wrapper {
@@ -255,6 +254,10 @@ body.is-visible .stars{ animation-play-state:running; }
   flex-grow: 1;
   background: transparent;
   min-height: 0;
+  width:100%;
+  margin-right:20px;
+  overflow-x: hidden;
+  
 }
 
 #editor {
@@ -348,7 +351,6 @@ body.is-visible .stars{ animation-play-state:running; }
   padding: 8px 36px 8px 12px;
   border-radius: 3px;
   border: 1px solid var(--focus-glow);
-  box-shadow: 0 0 5px var(--focus-glow);
   background: transparent;
   color: var(--focus-glow);
   outline: none;
@@ -382,7 +384,6 @@ body.is-visible .stars{ animation-play-state:running; }
   background: transparent;
   color: #aaa;
   border-color: #ffff00;
-  box-shadow: 0 0 10px #dd0;
   border-radius: 3px;
   padding: 4px 8px;
   font-size: 0.8rem;
