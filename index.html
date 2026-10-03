@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <meta http-equiv="Content-Security-Policy"
-  
-    content= "default-src 'self'; 
+    <meta http-equiv=" Content-Security-Policy" content="default-src 'self'; 
     script-src 'self'; 
     style-src 'self'; 
     img-src 'self' data: https:; 
@@ -22,118 +21,119 @@
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <title>🐦一時メモ</title>
-    
-    <link rel="stylesheet" href="./style.css">
-    
-     <link rel="manifest"
-  href="./manifest.json">
+  
+  <title>🐦一時メモ</title>
+  
+  <link rel="stylesheet" href="./style.css">
+  
+  <link rel="manifest" href="./manifest.json">
   
 </head>
+
 <body>
+  
+  <div class="stars"></div>
 
-<div class="stars"></div>
-<div class="constellations"></div>
-
-<div class="all-contents">
+  
+  <div class="all-contents">
     <div id="memo-screen">
-        <header class="memo-header">
-            <div class="group-left">
-                <button class="btn-back pink push" disabled id="btn-back">←<br>Back</button>
-                <button class="blue push" id="btn-move" style="display:none;">🚐<br>Move</button>
-                <button class="red push" id="btn-delete" style="display:none;">🗑️<br>trash</button>
-            </div>
-
-            <!--中央グループ-->
-            <div class="group-center">
-                  <label for="editor-title">Title:</label>
-                <div id="editor-title-wrapper" tabindex="0" >
-
-                    <textarea id="editor-title" class="editor-title" rows="1"></textarea>
-                    <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
-                </div>
-                <div id="message"></div>
-                <div id="char-count-display" class="char-count">0文字</div>
-            </div>
-
-
-            <div id="edit-btns" class="group-right">
-                    <button class=" green push" id="btn-copy" title="全コピー">📋<br>Copy</button>
-                    <button class="push yellow" id="btn-clear" title="クリア">🧹<br>Clear</button>
-                    <button class="push purple" id="btn-undo" title="元に戻す">⌛<br>Undo</button>
-            </div>
-        </header>
-
-        <div id="editor-view">
-            <div class="editor-body-wrapper">
-                <textarea id="editor" ></textarea>
-            </div>
+      <header class="memo-header">
+        <div class="group-left">
+          <button class="btn-back pink push btn-font" disabled id="btn-back">🔙</button>
+          <button class="blue push btn-font" id="btn-move" style="display:none;">🚐</button>
+          <button class="red push btn-font" id="btn-delete" style="display:none;">🗑️</button>
         </div>
+        
+        <!--中央グループ-->
+        <div class="group-center">
+          <label for="editor-title">Title:</label>
+          <div id="editor-title-wrapper" tabindex="0">
+            
+            <textarea id="editor-title" class="editor-title" rows="1"></textarea>
+            <button id="btn-title-clear" class="btn-title-clear" title="タイトル全クリア">×</button>
+          </div>
+          <div id="message"></div>
+          <div id="char-count-display" class="char-count">0文字</div>
+        </div>
+        
+        
+        <div id="edit-btns" class="group-right">
+          <button class=" green push btn-font" id="btn-copy" title="全コピー">📋</button>
+          <button class="push yellow btn-font" id="btn-clear" title="クリア">🧹</button>
+          <button class="push purple btn-font" id="btn-undo" title="元に戻す">↩️</button>
+        </div>
+      </header>
+      
+      <div id="editor-view">
+        <div class="editor-body-wrapper">
+          <textarea id="editor"></textarea>
+        </div>
+      </div>
     </div><!--memo-screenここまで-->
-
-
-
+    
+    
+    
     <div id="visitor-screen">
-    <div class="head-n-bread">
+      <div class="head-n-bread">
         <header class="visitor-header">
-            <button class="green push" id="btn-new">+<br>Add</button>
-
-            <!-- 検索バー ＆ 並び替えコントロール -->
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <input type="text" id="search-input" class="search-input" placeholder="🔍">
-                    <button id="btn-search-clear" class="search-clear-btn" style="display: none;">×</button>
-                </div>
-
-                <div class="sort-wrapper">
-                    <label for="sort-select">Sort:</label>
-                    <select id="sort-select" class="sort-select">
-                        <option value="updated-desc">更新が新しい順</option>
-                        <option value="updated-asc">更新が古い順</option>
-                        <option value="title-asc">タイトル順 (A-Z)</option>
-                        <option value="title-desc">タイトル順 (Z-A)</option>
-                    </select>
-                </div><!--sort-wrapper終了-->
+          <button class="green push" id="btn-new">+<br>Add</button>
+          
+          <!-- 検索バー ＆ 並び替えコントロール -->
+          <div class="search-container">
+            <div class="search-wrapper">
+              <input type="text" id="search-input" class="search-input" placeholder="🔍">
+              <button id="btn-search-clear" class="search-clear-btn" style="display: none;">×</button>
             </div>
+            
+            <div class="sort-wrapper">
+              <label for="sort-select">Sort:</label>
+              <select id="sort-select" class="sort-select">
+                <option value="updated-desc">更新が新しい順</option>
+                <option value="updated-asc">更新が古い順</option>
+                <option value="title-asc">タイトル順 (A-Z)</option>
+                <option value="title-desc">タイトル順 (Z-A)</option>
+              </select>
+            </div><!--sort-wrapper終了-->
+          </div>
         </header>
-
-                <!-- パンくずリスト -->
-                <div id="breadcrumb" class="breadcrumb"></div>
-</div><!--head-n-breadここまで-->
-
-
-            <div id="main-view"></div>
+        
+        <!-- パンくずリスト -->
+        <div id="breadcrumb" class="breadcrumb"></div>
+      </div><!--head-n-breadここまで-->
+      
+      
+      <div id="main-view"></div>
     </div><!--visitor-screen終了-->
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
     <!-- 移動モーダル -->
     <div id="move-modal">
-        <div class="modal-content">
-            <div class="modal-title" id="move-modal-title">移動先を選択</div>
-            <div id="move-list"></div>
-            <button id="btn-move-cancel" class="move-folder-cancel red push">Cancel</button>
-        </div>
+      <div class="modal-content">
+        <div class="modal-title" id="move-modal-title">移動先を選択</div>
+        <div id="move-list"></div>
+        <button id="btn-move-cancel" class="move-folder-cancel red push">Cancel</button>
+      </div>
     </div>
-
+    
     <!-- 新規作成モーダル -->
     <div id="new-modal">
-        <div class="new-modal-content">
-            <div class="new-modal-title">Add what？🐱</div>
-            <div class="new-btn-group">
-                <button id="btn-new-folder" class="purple push">💼</button>
-                <button id="btn-new-note" class="blue push">📜</button>
-                <button id="btn-new-cancel" class="red push">Cancel</button>
-            </div>
+      <div class="new-modal-content">
+        <div class="new-modal-title">Add what？🐱</div>
+        <div class="new-btn-group">
+          <button id="btn-new-folder" class="purple push">💼</button>
+          <button id="btn-new-note" class="blue push">📜</button>
+          <button id="btn-new-cancel" class="red push">Cancel</button>
         </div>
+      </div>
     </div>
-
-
-</div>
-<script src="./script.js"></script>
+    
+    
+  </div>
+  <script src="./script.js"></script>
 </body>
+
 </html>
