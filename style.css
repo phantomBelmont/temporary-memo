@@ -273,7 +273,7 @@ body.is-visible .stars{ animation-play-state:running; }
   resize: none;
   outline: none;
   background: transparent;
-  padding:10px 10px 35vh 15px;
+  padding:10px 10px 40vh 15px;
   margin-right:20px;
   color: #aaa;
   overflow-x: hidden;
