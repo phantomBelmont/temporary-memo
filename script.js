@@ -79,6 +79,7 @@ const btnNew = document.getElementById('btn-new');
 const btnMove = document.getElementById('btn-move');
 const btnDelete = document.getElementById('btn-delete');
 const btnUndo = document.getElementById('btn-undo');
+const btnRedo = document.getElementById('btn-redo');
 const btnCopy = document.getElementById('btn-copy');
 const btnClear = document.getElementById('btn-clear');
 const btnClearHeader = document.getElementById('btn-clear-header');
@@ -485,6 +486,9 @@ function updateBackButton() {
 // ==========================================
 // 5. Undo / Redo ＆ エディタ機能
 // ==========================================
+// ==========================================
+// 5. Undo / Redo ＆ エディタ機能
+// ==========================================
 function resetUndoHistory(initialText) {
     undoStack = [initialText];
     redoStack = [];
@@ -498,7 +502,7 @@ function recordUndoState() {
     if (currentText !== lastState) {
         undoStack.push(currentText);
         if (undoStack.length > MAX_STACK_SIZE) undoStack.shift();
-        redoStack = [];
+        redoStack = []; // 新しい操作が行われたらRedoスタックはクリア
     }
 }
 
@@ -511,17 +515,32 @@ function undoEditor() {
         editorText.value = previousState;
         updateCharCount();
         triggerAutoSave();
-
     } else {
         showStatus('これ以上戻せないよ🦄');
     }
 }
 
+// 🆕 Redo（やり直し）機能
+function redoEditor() {
+    if (redoStack.length > 0) {
+        const nextState = redoStack.pop();
+        undoStack.push(nextState);
+
+        editorText.value = nextState;
+        updateCharCount();
+        triggerAutoSave();
+    } else {
+        showStatus('これ以上進めないよ🐱');
+    }
+}
+
 function copyAllText() {
     navigator.clipboard.writeText(editorText.value).then(() => {
+        showStatus('コピー完了😺✨'); 
     })
     .catch((err) => {
-            console.error('コピーに失敗しました', err);
+        console.error('コピー失敗詳細', err);
+        showStatus('コピー失敗…');
     });
 }
 
@@ -532,8 +551,8 @@ function clearEditorText() {
     updateCharCount();
     recordUndoState();
     triggerAutoSave();
-    ;
 }
+
 // ==========================================
 // 文字数カウント用グローバル関数
 // ==========================================
@@ -925,7 +944,7 @@ function performMove(id, newParentId) {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     initDB().then(() => {
-
+        
         switchView('gallery');
     }).catch(err => {
         console.error("DB初期化失敗:", err);
@@ -998,6 +1017,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (btnClearHeader) btnClearHeader.addEventListener('click', clearEditorText);
             if (btnUndo) btnUndo.addEventListener('click', undoEditor);
+            if (btnRedo) btnRedo.addEventListener('click', redoEditor);
             if (btnCopy) btnCopy.addEventListener('click', copyAllText);
             if (btnClear) btnClear.addEventListener('click', clearEditorText);
 
@@ -1076,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, { passive: true });
             }
-
+            
             function syncSpinner() {
     document.body.classList.toggle('is-visible', !document.hidden);
 }
