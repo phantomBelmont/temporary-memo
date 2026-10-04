@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta http-equiv=" Content-Security-Policy" content="default-src 'self'; 
+  
+  <meta http-equiv=" Content-Security-Policy" content="default-src 'self'; 
     script-src 'self'; 
     style-src 'self'; 
     img-src 'self' data: https:; 
@@ -33,15 +33,15 @@
 <body>
   
   <div class="stars"></div>
-
+  
   
   <div class="all-contents">
     <div id="memo-screen">
       <header class="memo-header">
         <div class="group-left">
-          <button class="btn-back pink push btn-font" disabled id="btn-back">🔙</button>
-          <button class="blue push btn-font" id="btn-move" style="display:none;">🚐</button>
-          <button class="red push btn-font" id="btn-delete" style="display:none;">🗑️</button>
+          <button class="btn-back push btn-font" disabled id="btn-back">🔙</button>
+          <button class="push btn-font" id="btn-clear" title="クリア">🧹</button>
+          <button class="push btn-font" id="btn-delete" style="display:none;">🗑️</button>
         </div>
         
         <!--中央グループ-->
@@ -58,9 +58,10 @@
         
         
         <div id="edit-btns" class="group-right">
-          <button class=" green push btn-font" id="btn-copy" title="全コピー">📋</button>
-          <button class="push yellow btn-font" id="btn-clear" title="クリア">🧹</button>
-          <button class="push purple btn-font" id="btn-undo" title="元に戻す">↩️</button>
+          <button class=" push btn-font" id="btn-copy" title="全コピー">📋</button>
+         
+          <button class="push btn-font" id="btn-undo" title="元に戻す">↩️</button>
+          <button id="btn-redo" class ="push btn-font" title="やり直す">↪️</button>
         </div>
       </header>
       
